@@ -1,0 +1,1534 @@
+{
+  "version": "2.18",
+  "children": [
+    {
+      "type": "text",
+      "id": "label-home",
+      "x": 80,
+      "y": 52,
+      "fill": "#1F2521",
+      "content": "01  Главная",
+      "fontFamily": "Inter",
+      "fontSize": 18,
+      "fontWeight": "700"
+    },
+    {
+      "type": "frame",
+      "id": "screen-home",
+      "x": 80,
+      "y": 88,
+      "name": "Главная",
+      "clip": true,
+      "width": 393,
+      "height": 852,
+      "fill": "#F7F4EE",
+      "cornerRadius": 32,
+      "stroke": "#D8D4CC",
+      "strokeWidth": 1,
+      "effect": {
+        "type": "shadow",
+        "shadowType": "outer",
+        "color": "#17231D20",
+        "offset": {
+          "x": 0,
+          "y": 14
+        },
+        "blur": 34
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "h-status",
+          "x": 24,
+          "y": 16,
+          "fill": "#1F2521",
+          "content": "9:41",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "700"
+        },
+        {
+          "type": "icon",
+          "id": "h-signal",
+          "x": 307,
+          "y": 17,
+          "width": 16,
+          "height": 16,
+          "icon": "signal",
+          "library": "lucide",
+          "fill": "#1F2521"
+        },
+        {
+          "type": "icon",
+          "id": "h-wifi",
+          "x": 331,
+          "y": 17,
+          "width": 16,
+          "height": 16,
+          "icon": "wifi",
+          "library": "lucide",
+          "fill": "#1F2521"
+        },
+        {
+          "type": "icon",
+          "id": "h-battery",
+          "x": 355,
+          "y": 17,
+          "width": 18,
+          "height": 16,
+          "icon": "battery-full",
+          "library": "lucide",
+          "fill": "#1F2521"
+        },
+        {
+          "type": "text",
+          "id": "h-eyebrow",
+          "x": 20,
+          "y": 58,
+          "fill": "#5D766A",
+          "content": "PET WORTH",
+          "fontFamily": "Inter",
+          "fontSize": 11,
+          "fontWeight": "700",
+          "letterSpacing": 1.4
+        },
+        {
+          "type": "text",
+          "id": "h-greeting",
+          "x": 20,
+          "y": 78,
+          "fill": "#1F2521",
+          "content": "Доброе утро, Руслан",
+          "fontFamily": "Inter",
+          "fontSize": 25,
+          "fontWeight": "700"
+        },
+        {
+          "type": "ellipse",
+          "id": "h-user-bg",
+          "x": 333,
+          "y": 58,
+          "fill": "#D8EADF",
+          "width": 40,
+          "height": 40
+        },
+        {
+          "type": "text",
+          "id": "h-user",
+          "x": 344,
+          "y": 68,
+          "fill": "#2F6B55",
+          "content": "Р",
+          "fontFamily": "Inter",
+          "fontSize": 16,
+          "fontWeight": "700"
+        },
+        {
+          "type": "frame",
+          "id": "h-pet-switch",
+          "x": 16,
+          "y": 122,
+          "width": 361,
+          "height": 72,
+          "fill": "#FFFFFF",
+          "cornerRadius": 20,
+          "stroke": "#E7E2D8",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "h-cat-bg",
+              "x": 12,
+              "y": 10,
+              "fill": "#D6E9DE",
+              "width": 52,
+              "height": 52
+            },
+            {
+              "type": "icon",
+              "id": "h-cat-icon",
+              "x": 24,
+              "y": 21,
+              "width": 28,
+              "height": 28,
+              "icon": "cat",
+              "library": "lucide",
+              "fill": "#171A18"
+            },
+            {
+              "type": "text",
+              "id": "h-pet-name",
+              "x": 76,
+              "y": 15,
+              "fill": "#1F2521",
+              "content": "Сеня",
+              "fontFamily": "Inter",
+              "fontSize": 17,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "h-pet-meta",
+              "x": 76,
+              "y": 39,
+              "fill": "#6B746F",
+              "content": "Кот · 4 года",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "500"
+            },
+            {
+              "type": "frame",
+              "id": "h-add-pet",
+              "x": 245,
+              "y": 17,
+              "width": 100,
+              "height": 38,
+              "fill": "#EEF5F1",
+              "cornerRadius": 19,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "h-add-pet-i",
+                  "x": 12,
+                  "y": 11,
+                  "width": 16,
+                  "height": 16,
+                  "icon": "plus",
+                  "library": "lucide",
+                  "fill": "#2F6B55"
+                },
+                {
+                  "type": "text",
+                  "id": "h-add-pet-t",
+                  "x": 34,
+                  "y": 10,
+                  "fill": "#2F6B55",
+                  "content": "Добавить",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "h-next-title",
+          "x": 20,
+          "y": 218,
+          "fill": "#1F2521",
+          "content": "Ближайшее",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "700"
+        },
+        {
+          "type": "frame",
+          "id": "h-next-card",
+          "x": 16,
+          "y": 248,
+          "width": 361,
+          "height": 150,
+          "fill": "#E1F0E7",
+          "cornerRadius": 22,
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "h-next-icon-bg",
+              "x": 16,
+              "y": 16,
+              "width": 42,
+              "height": 42,
+              "fill": "#FFFFFF",
+              "cornerRadius": 14,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "h-next-icon",
+                  "x": 11,
+                  "y": 11,
+                  "width": 20,
+                  "height": 20,
+                  "icon": "syringe",
+                  "library": "lucide",
+                  "fill": "#2F6B55"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "h-next-badge",
+              "x": 276,
+              "y": 17,
+              "width": 68,
+              "height": 28,
+              "fill": "#F8D4C7",
+              "cornerRadius": 14,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "h-next-badge-t",
+                  "x": 14,
+                  "y": 7,
+                  "fill": "#98442F",
+                  "content": "Скоро",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "h-next-name",
+              "x": 16,
+              "y": 70,
+              "fill": "#1F2521",
+              "content": "Повторная вакцинация",
+              "fontFamily": "Inter",
+              "fontSize": 18,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "h-next-date",
+              "x": 16,
+              "y": 97,
+              "fill": "#587064",
+              "content": "24 сентября  ·  через 2 дня",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "500"
+            },
+            {
+              "type": "frame",
+              "id": "h-next-btn",
+              "x": 263,
+              "y": 102,
+              "width": 82,
+              "height": 34,
+              "fill": "#2F6B55",
+              "cornerRadius": 17,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "h-next-btn-t",
+                  "x": 17,
+                  "y": 8,
+                  "fill": "#FFFFFF",
+                  "content": "Открыть",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "h-today-title",
+          "x": 20,
+          "y": 422,
+          "fill": "#1F2521",
+          "content": "Сегодня",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "700"
+        },
+        {
+          "type": "frame",
+          "id": "h-today-card",
+          "x": 16,
+          "y": 452,
+          "width": 361,
+          "height": 62,
+          "fill": "#FFFFFF",
+          "cornerRadius": 18,
+          "stroke": "#E7E2D8",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "h-check",
+              "x": 16,
+              "y": 18,
+              "fill": "#FFFFFF",
+              "width": 26,
+              "height": 26,
+              "stroke": "#B9C5BE",
+              "strokeWidth": 2
+            },
+            {
+              "type": "text",
+              "id": "h-med",
+              "x": 56,
+              "y": 13,
+              "fill": "#1F2521",
+              "content": "Дать лекарство",
+              "fontFamily": "Inter",
+              "fontSize": 15,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "h-med-time",
+              "x": 56,
+              "y": 36,
+              "fill": "#6B746F",
+              "content": "Ветмедин · 20:00",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "500"
+            },
+            {
+              "type": "icon",
+              "id": "h-chevron",
+              "x": 329,
+              "y": 22,
+              "width": 18,
+              "height": 18,
+              "icon": "chevron-right",
+              "library": "lucide",
+              "fill": "#88918C"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "h-recent-title",
+          "x": 20,
+          "y": 540,
+          "fill": "#1F2521",
+          "content": "Последние события",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "h-all",
+          "x": 322,
+          "y": 544,
+          "fill": "#2F6B55",
+          "content": "Все",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "700"
+        },
+        {
+          "type": "frame",
+          "id": "h-event1",
+          "x": 16,
+          "y": 572,
+          "width": 361,
+          "height": 70,
+          "fill": "#FFFFFF",
+          "cornerRadius": 18,
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "h-event1-icon-bg",
+              "x": 14,
+              "y": 14,
+              "width": 42,
+              "height": 42,
+              "fill": "#F1EEE8",
+              "cornerRadius": 13,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "h-event1-icon",
+                  "x": 11,
+                  "y": 11,
+                  "width": 20,
+                  "height": 20,
+                  "icon": "stethoscope",
+                  "library": "lucide",
+                  "fill": "#42544B"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "h-event1-name",
+              "x": 68,
+              "y": 14,
+              "fill": "#1F2521",
+              "content": "Приём у ветеринара",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "h-event1-date",
+              "x": 68,
+              "y": 39,
+              "fill": "#6B746F",
+              "content": "18 сентября",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "500"
+            },
+            {
+              "type": "icon",
+              "id": "h-event1-more",
+              "x": 329,
+              "y": 25,
+              "width": 18,
+              "height": 18,
+              "icon": "chevron-right",
+              "library": "lucide",
+              "fill": "#88918C"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "h-event2",
+          "x": 16,
+          "y": 650,
+          "width": 361,
+          "height": 70,
+          "fill": "#FFFFFF",
+          "cornerRadius": 18,
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "h-event2-icon-bg",
+              "x": 14,
+              "y": 14,
+              "width": 42,
+              "height": 42,
+              "fill": "#F1EEE8",
+              "cornerRadius": 13,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "h-event2-icon",
+                  "x": 11,
+                  "y": 11,
+                  "width": 20,
+                  "height": 20,
+                  "icon": "test-tube-2",
+                  "library": "lucide",
+                  "fill": "#42544B"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "h-event2-name",
+              "x": 68,
+              "y": 14,
+              "fill": "#1F2521",
+              "content": "Анализ крови",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "h-event2-date",
+              "x": 68,
+              "y": 39,
+              "fill": "#6B746F",
+              "content": "12 сентября",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "500"
+            },
+            {
+              "type": "icon",
+              "id": "h-event2-more",
+              "x": 329,
+              "y": 25,
+              "width": 18,
+              "height": 18,
+              "icon": "chevron-right",
+              "library": "lucide",
+              "fill": "#88918C"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "h-fab",
+          "x": 188,
+          "y": 736,
+          "width": 189,
+          "height": 48,
+          "fill": "#1F2521",
+          "cornerRadius": 24,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#17231D32",
+            "offset": {
+              "x": 0,
+              "y": 6
+            },
+            "blur": 16
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "icon",
+              "id": "h-fab-icon",
+              "x": 18,
+              "y": 14,
+              "width": 20,
+              "height": 20,
+              "icon": "plus",
+              "library": "lucide",
+              "fill": "#FFFFFF"
+            },
+            {
+              "type": "text",
+              "id": "h-fab-text",
+              "x": 48,
+              "y": 14,
+              "fill": "#FFFFFF",
+              "content": "Добавить событие",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "h-nav",
+          "x": 0,
+          "y": 796,
+          "width": 393,
+          "height": 56,
+          "fill": "#FFFFFF",
+          "stroke": "#E7E2D8",
+          "strokeWidth": {
+            "top": 1
+          },
+          "strokeLinejoin": "round",
+          "layout": "none",
+          "children": [
+            {
+              "type": "icon",
+              "id": "h-nav-home-i",
+              "x": 38,
+              "y": 10,
+              "width": 22,
+              "height": 22,
+              "icon": "house",
+              "library": "lucide",
+              "fill": "#2F6B55"
+            },
+            {
+              "type": "text",
+              "id": "h-nav-home-t",
+              "x": 28,
+              "y": 35,
+              "fill": "#2F6B55",
+              "content": "Главная",
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "fontWeight": "700"
+            },
+            {
+              "type": "icon",
+              "id": "h-nav-pets-i",
+              "x": 137,
+              "y": 10,
+              "width": 22,
+              "height": 22,
+              "icon": "paw-print",
+              "library": "lucide",
+              "fill": "#89918D"
+            },
+            {
+              "type": "text",
+              "id": "h-nav-pets-t",
+              "x": 127,
+              "y": 35,
+              "fill": "#89918D",
+              "content": "Питомцы",
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "fontWeight": "600"
+            },
+            {
+              "type": "icon",
+              "id": "h-nav-clinic-i",
+              "x": 236,
+              "y": 10,
+              "width": 22,
+              "height": 22,
+              "icon": "map-pin",
+              "library": "lucide",
+              "fill": "#89918D"
+            },
+            {
+              "type": "text",
+              "id": "h-nav-clinic-t",
+              "x": 227,
+              "y": 35,
+              "fill": "#89918D",
+              "content": "Клиники",
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "fontWeight": "600"
+            },
+            {
+              "type": "icon",
+              "id": "h-nav-profile-i",
+              "x": 334,
+              "y": 10,
+              "width": 22,
+              "height": 22,
+              "icon": "user-round",
+              "library": "lucide",
+              "fill": "#89918D"
+            },
+            {
+              "type": "text",
+              "id": "h-nav-profile-t",
+              "x": 321,
+              "y": 35,
+              "fill": "#89918D",
+              "content": "Профиль",
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "fontWeight": "600"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "label-pet",
+      "x": 521,
+      "y": 52,
+      "fill": "#1F2521",
+      "content": "02  Питомец",
+      "fontFamily": "Inter",
+      "fontSize": 18,
+      "fontWeight": "700"
+    },
+    {
+      "type": "frame",
+      "id": "screen-pet",
+      "x": 521,
+      "y": 88,
+      "name": "Питомец · Сеня",
+      "clip": true,
+      "width": 393,
+      "height": 852,
+      "fill": "#F7F4EE",
+      "cornerRadius": 32,
+      "stroke": "#D8D4CC",
+      "strokeWidth": 1,
+      "effect": {
+        "type": "shadow",
+        "shadowType": "outer",
+        "color": "#17231D20",
+        "offset": {
+          "x": 0,
+          "y": 14
+        },
+        "blur": 34
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "p-status",
+          "x": 24,
+          "y": 16,
+          "fill": "#1F2521",
+          "content": "9:41",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "700"
+        },
+        {
+          "type": "icon",
+          "id": "p-signal",
+          "x": 307,
+          "y": 17,
+          "width": 16,
+          "height": 16,
+          "icon": "signal",
+          "library": "lucide",
+          "fill": "#1F2521"
+        },
+        {
+          "type": "icon",
+          "id": "p-wifi",
+          "x": 331,
+          "y": 17,
+          "width": 16,
+          "height": 16,
+          "icon": "wifi",
+          "library": "lucide",
+          "fill": "#1F2521"
+        },
+        {
+          "type": "icon",
+          "id": "p-battery",
+          "x": 355,
+          "y": 17,
+          "width": 18,
+          "height": 16,
+          "icon": "battery-full",
+          "library": "lucide",
+          "fill": "#1F2521"
+        },
+        {
+          "type": "frame",
+          "id": "p-back-bg",
+          "x": 16,
+          "y": 54,
+          "width": 40,
+          "height": 40,
+          "fill": "#FFFFFF",
+          "cornerRadius": 20,
+          "layout": "none",
+          "children": [
+            {
+              "type": "icon",
+              "id": "p-back",
+              "x": 10,
+              "y": 10,
+              "width": 20,
+              "height": 20,
+              "icon": "arrow-left",
+              "library": "lucide",
+              "fill": "#1F2521"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "p-title",
+          "x": 166,
+          "y": 64,
+          "fill": "#1F2521",
+          "content": "Сеня",
+          "fontFamily": "Inter",
+          "fontSize": 18,
+          "fontWeight": "700"
+        },
+        {
+          "type": "frame",
+          "id": "p-more-bg",
+          "x": 337,
+          "y": 54,
+          "width": 40,
+          "height": 40,
+          "fill": "#FFFFFF",
+          "cornerRadius": 20,
+          "layout": "none",
+          "children": [
+            {
+              "type": "icon",
+              "id": "p-more",
+              "x": 10,
+              "y": 10,
+              "width": 20,
+              "height": 20,
+              "icon": "ellipsis",
+              "library": "lucide",
+              "fill": "#1F2521"
+            }
+          ]
+        },
+        {
+          "type": "ellipse",
+          "id": "p-avatar-bg",
+          "x": 145,
+          "y": 110,
+          "fill": "#D6E9DE",
+          "width": 104,
+          "height": 104
+        },
+        {
+          "type": "ellipse",
+          "id": "p-avatar-face",
+          "x": 166,
+          "y": 132,
+          "fill": "#191C1A",
+          "width": 62,
+          "height": 62
+        },
+        {
+          "type": "polygon",
+          "polygonCount": 3,
+          "cornerRadius": 3,
+          "id": "p-ear-l",
+          "x": 169,
+          "y": 122,
+          "rotation": -10,
+          "fill": "#191C1A",
+          "width": 27,
+          "height": 34
+        },
+        {
+          "type": "polygon",
+          "polygonCount": 3,
+          "cornerRadius": 3,
+          "id": "p-ear-r",
+          "x": 201,
+          "y": 122,
+          "rotation": 10,
+          "fill": "#191C1A",
+          "width": 27,
+          "height": 34
+        },
+        {
+          "type": "ellipse",
+          "id": "p-eye-l",
+          "x": 182,
+          "y": 157,
+          "fill": "#CFE8DA",
+          "width": 6,
+          "height": 8
+        },
+        {
+          "type": "ellipse",
+          "id": "p-eye-r",
+          "x": 207,
+          "y": 157,
+          "fill": "#CFE8DA",
+          "width": 6,
+          "height": 8
+        },
+        {
+          "type": "text",
+          "id": "p-meta",
+          "x": 141,
+          "y": 226,
+          "fill": "#1F2521",
+          "content": "Кот  ·  4 года",
+          "fontFamily": "Inter",
+          "fontSize": 15,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "p-breed",
+          "x": 100,
+          "y": 250,
+          "fill": "#6B746F",
+          "content": "Британская короткошёрстная  ·  5,2 кг",
+          "fontFamily": "Inter",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "frame",
+          "id": "p-health",
+          "x": 16,
+          "y": 282,
+          "width": 361,
+          "height": 96,
+          "fill": "#FFFFFF",
+          "cornerRadius": 20,
+          "stroke": "#E7E2D8",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "icon",
+              "id": "p-health-i",
+              "x": 16,
+              "y": 16,
+              "width": 20,
+              "height": 20,
+              "icon": "heart-pulse",
+              "library": "lucide",
+              "fill": "#2F6B55"
+            },
+            {
+              "type": "text",
+              "id": "p-health-title",
+              "x": 46,
+              "y": 16,
+              "fill": "#1F2521",
+              "content": "Важное о здоровье",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "p-allergy",
+              "x": 16,
+              "y": 49,
+              "fill": "#7B837F",
+              "content": "Аллергии",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "p-allergy-v",
+              "x": 106,
+              "y": 49,
+              "fill": "#1F2521",
+              "content": "нет данных",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "p-meds",
+              "x": 16,
+              "y": 72,
+              "fill": "#7B837F",
+              "content": "Лекарства",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "p-meds-v",
+              "x": 106,
+              "y": 72,
+              "fill": "#1F2521",
+              "content": "Ветмедин, 1× в день",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p-tabs",
+          "x": 16,
+          "y": 398,
+          "width": 361,
+          "height": 44,
+          "fill": "#ECE9E2",
+          "cornerRadius": 16,
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "p-tab-active",
+              "x": 4,
+              "y": 4,
+              "width": 111,
+              "height": 36,
+              "fill": "#FFFFFF",
+              "cornerRadius": 13,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#17231D14",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 6
+              },
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p-tab-h",
+                  "x": 28,
+                  "y": 10,
+                  "fill": "#1F2521",
+                  "content": "История",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "p-tab-d",
+              "x": 137,
+              "y": 14,
+              "fill": "#707874",
+              "content": "Документы",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "p-tab-data",
+              "x": 286,
+              "y": 14,
+              "fill": "#707874",
+              "content": "Данные",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p-chip-all",
+          "x": 16,
+          "y": 458,
+          "width": 52,
+          "height": 32,
+          "fill": "#2F6B55",
+          "cornerRadius": 16,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "p-chip-all-t",
+              "x": 14,
+              "y": 9,
+              "fill": "#FFFFFF",
+              "content": "Все",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p-chip-vax",
+          "x": 76,
+          "y": 458,
+          "width": 96,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "p-chip-vax-t",
+              "x": 13,
+              "y": 9,
+              "fill": "#5E6863",
+              "content": "Вакцинации",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p-chip-visit",
+          "x": 180,
+          "y": 458,
+          "width": 78,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "p-chip-visit-t",
+              "x": 14,
+              "y": 9,
+              "fill": "#5E6863",
+              "content": "Приёмы",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p-chip-test",
+          "x": 266,
+          "y": 458,
+          "width": 91,
+          "height": 32,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "p-chip-test-t",
+              "x": 14,
+              "y": 9,
+              "fill": "#5E6863",
+              "content": "Анализы",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "p-timeline-title",
+          "x": 20,
+          "y": 514,
+          "fill": "#1F2521",
+          "content": "Медицинская история",
+          "fontFamily": "Inter",
+          "fontSize": 17,
+          "fontWeight": "700"
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": 1,
+          "id": "p-line",
+          "x": 35,
+          "y": 557,
+          "fill": "#D8E3DD",
+          "width": 2,
+          "height": 154
+        },
+        {
+          "type": "ellipse",
+          "id": "p-dot1",
+          "x": 28,
+          "y": 558,
+          "fill": "#2F6B55",
+          "width": 16,
+          "height": 16,
+          "stroke": "#F7F4EE",
+          "strokeWidth": 4
+        },
+        {
+          "type": "frame",
+          "id": "p-t1",
+          "x": 56,
+          "y": 548,
+          "width": 321,
+          "height": 66,
+          "fill": "#FFFFFF",
+          "cornerRadius": 17,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "p-t1-date",
+              "x": 14,
+              "y": 11,
+              "fill": "#2F6B55",
+              "content": "18 сент.",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "p-t1-name",
+              "x": 14,
+              "y": 31,
+              "fill": "#1F2521",
+              "content": "Приём у ветеринара",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "icon",
+              "id": "p-t1-more",
+              "x": 287,
+              "y": 24,
+              "width": 18,
+              "height": 18,
+              "icon": "chevron-right",
+              "library": "lucide",
+              "fill": "#88918C"
+            }
+          ]
+        },
+        {
+          "type": "ellipse",
+          "id": "p-dot2",
+          "x": 28,
+          "y": 632,
+          "fill": "#A7B8AF",
+          "width": 16,
+          "height": 16,
+          "stroke": "#F7F4EE",
+          "strokeWidth": 4
+        },
+        {
+          "type": "frame",
+          "id": "p-t2",
+          "x": 56,
+          "y": 622,
+          "width": 321,
+          "height": 66,
+          "fill": "#FFFFFF",
+          "cornerRadius": 17,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "p-t2-date",
+              "x": 14,
+              "y": 11,
+              "fill": "#68736D",
+              "content": "12 сент.",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "p-t2-name",
+              "x": 14,
+              "y": 31,
+              "fill": "#1F2521",
+              "content": "Анализ крови",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "icon",
+              "id": "p-t2-more",
+              "x": 287,
+              "y": 24,
+              "width": 18,
+              "height": 18,
+              "icon": "chevron-right",
+              "library": "lucide",
+              "fill": "#88918C"
+            }
+          ]
+        },
+        {
+          "type": "ellipse",
+          "id": "p-dot3",
+          "x": 28,
+          "y": 706,
+          "fill": "#A7B8AF",
+          "width": 16,
+          "height": 16,
+          "stroke": "#F7F4EE",
+          "strokeWidth": 4
+        },
+        {
+          "type": "frame",
+          "id": "p-t3",
+          "x": 56,
+          "y": 696,
+          "width": 321,
+          "height": 66,
+          "fill": "#FFFFFF",
+          "cornerRadius": 17,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "p-t3-date",
+              "x": 14,
+              "y": 11,
+              "fill": "#68736D",
+              "content": "20 авг.",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "p-t3-name",
+              "x": 14,
+              "y": 31,
+              "fill": "#1F2521",
+              "content": "Вакцинация",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "icon",
+              "id": "p-t3-more",
+              "x": 287,
+              "y": 24,
+              "width": 18,
+              "height": 18,
+              "icon": "chevron-right",
+              "library": "lucide",
+              "fill": "#88918C"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p-fab",
+          "x": 188,
+          "y": 736,
+          "width": 189,
+          "height": 48,
+          "fill": "#1F2521",
+          "cornerRadius": 24,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#17231D32",
+            "offset": {
+              "x": 0,
+              "y": 6
+            },
+            "blur": 16
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "icon",
+              "id": "p-fab-icon",
+              "x": 18,
+              "y": 14,
+              "width": 20,
+              "height": 20,
+              "icon": "plus",
+              "library": "lucide",
+              "fill": "#FFFFFF"
+            },
+            {
+              "type": "text",
+              "id": "p-fab-text",
+              "x": 48,
+              "y": 14,
+              "fill": "#FFFFFF",
+              "content": "Добавить событие",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p-nav",
+          "x": 0,
+          "y": 796,
+          "width": 393,
+          "height": 56,
+          "fill": "#FFFFFF",
+          "stroke": "#E7E2D8",
+          "strokeWidth": {
+            "top": 1
+          },
+          "strokeLinejoin": "round",
+          "layout": "none",
+          "children": [
+            {
+              "type": "icon",
+              "id": "p-nav-home-i",
+              "x": 38,
+              "y": 10,
+              "width": 22,
+              "height": 22,
+              "icon": "house",
+              "library": "lucide",
+              "fill": "#89918D"
+            },
+            {
+              "type": "text",
+              "id": "p-nav-home-t",
+              "x": 28,
+              "y": 35,
+              "fill": "#89918D",
+              "content": "Главная",
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "fontWeight": "600"
+            },
+            {
+              "type": "icon",
+              "id": "p-nav-pets-i",
+              "x": 137,
+              "y": 10,
+              "width": 22,
+              "height": 22,
+              "icon": "paw-print",
+              "library": "lucide",
+              "fill": "#2F6B55"
+            },
+            {
+              "type": "text",
+              "id": "p-nav-pets-t",
+              "x": 127,
+              "y": 35,
+              "fill": "#2F6B55",
+              "content": "Питомцы",
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "fontWeight": "700"
+            },
+            {
+              "type": "icon",
+              "id": "p-nav-clinic-i",
+              "x": 236,
+              "y": 10,
+              "width": 22,
+              "height": 22,
+              "icon": "map-pin",
+              "library": "lucide",
+              "fill": "#89918D"
+            },
+            {
+              "type": "text",
+              "id": "p-nav-clinic-t",
+              "x": 227,
+              "y": 35,
+              "fill": "#89918D",
+              "content": "Клиники",
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "fontWeight": "600"
+            },
+            {
+              "type": "icon",
+              "id": "p-nav-profile-i",
+              "x": 334,
+              "y": 10,
+              "width": 22,
+              "height": 22,
+              "icon": "user-round",
+              "library": "lucide",
+              "fill": "#89918D"
+            },
+            {
+              "type": "text",
+              "id": "p-nav-profile-t",
+              "x": 321,
+              "y": 35,
+              "fill": "#89918D",
+              "content": "Профиль",
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "fontWeight": "600"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "fileToken": "a915712e-902f-4b7a-a78a-1fbff73628da"
+}
