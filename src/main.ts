@@ -17,6 +17,7 @@ import App from './App.vue'
 import router from './router'
 import { useAuthStore } from './stores/auth'
 import { initializeMonitoring } from './lib/monitoring'
+import { initializeTheme } from './composables/useTheme'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -27,6 +28,7 @@ app.use(VueQueryPlugin)
 app.use(router)
 
 initializeMonitoring(app, router)
+await initializeTheme()
 
 const auth = useAuthStore(pinia)
 await auth.initialize()

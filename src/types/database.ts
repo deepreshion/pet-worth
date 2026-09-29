@@ -28,7 +28,7 @@ export interface Database {
           birth_date: string | null; birth_date_approximate: boolean; photo_path: string | null; created_at: string; updated_at: string
         }
         Insert: Record<string, never>
-        Update: { photo_path?: string | null; name?: string; breed?: string | null; sex?: 'female' | 'male' | 'unknown' | null }
+        Update: Record<string, never>
         Relationships: []
       }
       weight_records: {
@@ -52,6 +52,23 @@ export interface Database {
           p_weight_kg: number | null
         }
         Returns: { pet_id: string; family_id: string }[]
+      }
+      update_pet_with_weight: {
+        Args: {
+          p_pet_id: string
+          p_name: string
+          p_species: 'cat' | 'dog'
+          p_breed: string | null
+          p_sex: 'female' | 'male' | 'unknown' | null
+          p_birth_date: string | null
+          p_birth_date_approximate: boolean
+          p_weight_kg: number | null
+        }
+        Returns: string
+      }
+      replace_pet_photo_path: {
+        Args: { p_pet_id: string; p_new_photo_path: string }
+        Returns: string | null
       }
     }
     Enums: {

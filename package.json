@@ -15,7 +15,8 @@
     "supabase:start": "npx supabase start",
     "supabase:stop": "npx supabase stop",
     "supabase:reset": "npx supabase db reset",
-    "supabase:test": "npx supabase test db"
+    "supabase:test": "npx supabase test db",
+    "e2e:smoke": "maestro test e2e/stage-one-demo.yaml"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",

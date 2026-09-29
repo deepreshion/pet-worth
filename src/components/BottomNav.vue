@@ -1,23 +1,21 @@
 <template>
-  <ion-footer>
-    <ion-tab-bar>
-      <ion-tab-button tab="home" href="/home">
-        <ion-icon :icon="homeOutline" /><ion-label>Главная</ion-label>
-      </ion-tab-button>
-      <ion-tab-button tab="pets" href="/pets">
-        <ion-icon :icon="pawOutline" /><ion-label>Питомцы</ion-label>
-      </ion-tab-button>
-      <ion-tab-button tab="clinics" disabled>
-        <ion-icon :icon="locationOutline" /><ion-label>Клиники</ion-label>
-      </ion-tab-button>
-      <ion-tab-button tab="profile" disabled>
-        <ion-icon :icon="personOutline" /><ion-label>Профиль</ion-label>
-      </ion-tab-button>
-    </ion-tab-bar>
-  </ion-footer>
+  <ion-tab-bar slot="bottom" class="bottom-nav" aria-label="Основная навигация">
+    <ion-tab-button tab="home" href="/home">
+      <ion-icon :icon="route.path === '/home' ? home : homeOutline" /><ion-label>Главная</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="pets" href="/pets">
+      <ion-icon :icon="route.path.startsWith('/pets') ? paw : pawOutline" /><ion-label>Питомцы</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="profile" href="/profile">
+      <ion-icon :icon="route.path === '/profile' ? person : personOutline" /><ion-label>Пользователь</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
 </template>
 
 <script setup lang="ts">
-import { IonFooter, IonIcon, IonLabel, IonTabBar, IonTabButton } from '@ionic/vue'
-import { homeOutline, locationOutline, pawOutline, personOutline } from 'ionicons/icons'
+import { IonIcon, IonLabel, IonTabBar, IonTabButton } from '@ionic/vue'
+import { useRoute } from 'vue-router'
+import { home, homeOutline, paw, pawOutline, person, personOutline } from 'ionicons/icons'
+
+const route = useRoute()
 </script>

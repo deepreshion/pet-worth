@@ -11,6 +11,12 @@ interface AuthState {
   initialized: boolean
 }
 
+const redirectKey = 'pet-worth-auth-redirect'
+
+function isSafeInternalPath(value: string) {
+  return value.startsWith('/') && !value.startsWith('//') && !value.includes('://')
+}
+
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({ session: null, user: null, initialized: false }),
   actions: {
@@ -60,6 +66,14 @@ export const useAuthStore = defineStore('auth', {
       if (error) throw error
       this.session = null
       this.user = null
+    },
+    rememberRedirect(path: string) {
+      if (isSafeInternalPath(path)) window.localStorage.setItem(redirectKey, path)
+    },
+    consumeRedirect() {
+      const path = window.localStorage.getItem(redirectKey)
+      window.localStorage.removeItem(redirectKey)
+      return path && isSafeInternalPath(path) ? path : '/home'
     },
     enterDemo() {
       enableDemoMode()

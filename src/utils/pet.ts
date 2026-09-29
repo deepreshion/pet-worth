@@ -5,6 +5,14 @@ export function approximateBirthDate(years: number, months: number, today = new 
   return date.toISOString().slice(0, 10)
 }
 
+export function approximateAgeParts(birthDate: string, today = new Date()): { years: number; months: number } {
+  const birth = new Date(`${birthDate}T00:00:00Z`)
+  let totalMonths = (today.getUTCFullYear() - birth.getUTCFullYear()) * 12 + today.getUTCMonth() - birth.getUTCMonth()
+  if (today.getUTCDate() < birth.getUTCDate()) totalMonths -= 1
+  totalMonths = Math.max(0, totalMonths)
+  return { years: Math.floor(totalMonths / 12), months: totalMonths % 12 }
+}
+
 export function formatPetAge(birthDate: string | null, approximate: boolean, today = new Date()): string | null {
   if (!birthDate) return null
   const birth = new Date(`${birthDate}T00:00:00Z`)
@@ -30,4 +38,8 @@ export function validatePhoto(file: File): string | null {
   if (!allowed.includes(file.type)) return 'Поддерживаются JPEG, PNG, WebP и HEIC.'
   if (file.size > 10 * 1024 * 1024) return 'Фотография должна быть не больше 10 МБ.'
   return null
+}
+
+export function shouldCreateWeightRecord(current: number | null, next: number | undefined): boolean {
+  return next != null && next !== current
 }

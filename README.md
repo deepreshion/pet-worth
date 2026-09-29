@@ -12,7 +12,7 @@ cp .env.example .env
 npm run supabase:start
 ```
 
-После запуска Supabase скопируйте локальные `API URL` и `anon key` в `.env`, затем:
+После запуска Supabase скопируйте локальные `API URL` и `Supabase publishable key` в `.env` как `VITE_SUPABASE_URL` и `VITE_SUPABASE_PUBLISHABLE_KEY`, затем:
 
 ```bash
 npm run dev
@@ -52,7 +52,11 @@ open ios/App/App.xcodeproj
 1. Создайте отдельный проект Supabase.
 2. Привяжите CLI и примените миграции: `supabase link --project-ref <ref>` и `supabase db push`.
 3. Добавьте в Auth URL Configuration адрес Web-приложения с `/auth/callback` и `petworth://auth/callback`.
-4. Заполните `VITE_SUPABASE_URL` и `VITE_SUPABASE_ANON_KEY`; `service_role` клиенту не требуется и не должен попадать в `.env`.
+4. Скопируйте из настроек проекта `Project URL` и `Supabase publishable key`, затем задайте их как `VITE_SUPABASE_URL` и `VITE_SUPABASE_PUBLISHABLE_KEY` в переменных окружения клиентской сборки.
 5. При необходимости добавьте `VITE_SENTRY_DSN`. Sentry настроен без отправки PII и содержимого форм.
+
+Supabase publishable key разрешено включать в клиентскую Web- или мобильную сборку. Он не является секретом: безопасность и разграничение доступа к данным должны обеспечиваться корректными политиками Row Level Security (RLS).
+
+Supabase secret key и legacy `service_role` дают повышенные права. Их нельзя помещать в `.env` клиентского приложения, исходный код, CI-переменные клиентской сборки или мобильный bundle.
 
 Никакие демонстрационные медицинские записи не создаются. Staging предназначен только для тестовых, не реальных медицинских данных.

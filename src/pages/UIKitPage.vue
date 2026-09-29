@@ -94,7 +94,7 @@
                   <div><code>Display / 40</code><span class="type-display">Карточка питомца</span></div>
                   <div><code>H1 / 32</code><span class="type-h1">Медицинская история</span></div>
                   <div><code>H2 / 24</code><span class="type-h2">Ближайшие события</span></div>
-                  <div><code>Body / 16</code><span class="type-body">Повторная вакцинация запланирована на 24 сентября.</span></div>
+                  <div><code>Body / 16</code><span class="type-body">Основной текст интерфейса остаётся коротким и ясным.</span></div>
                   <div><code>Caption / 12</code><span class="type-caption">ВетЛайф, ответственный Руслан</span></div>
                 </div>
               </div>
@@ -128,7 +128,7 @@
               </div>
               <div class="component-stage component-stage--controls">
                 <div class="button-column">
-                  <button class="pw-button pw-button--primary" type="button"><ion-icon :icon="addOutline" /> Добавить событие</button>
+                  <button class="pw-button pw-button--primary" type="button"><ion-icon :icon="addOutline" /> Основное действие</button>
                   <button class="pw-button pw-button--secondary" type="button">Открыть историю</button>
                   <button class="pw-button pw-button--danger" type="button">Удалить запись</button>
                   <button class="pw-button pw-button--primary" type="button" disabled>Сохранение</button>
@@ -181,19 +181,19 @@
                 <article class="event-card">
                   <div class="event-card__icon"><ion-icon :icon="medicalOutline" /></div>
                   <p>Приём в клинике</p>
-                  <h3>Повторная вакцинация</h3>
+                  <h3>Название карточки</h3>
                   <time datetime="2026-09-24T12:00">24 сентября, 12:00</time>
                   <div class="event-card__meta"><span><ion-icon :icon="locationOutline" /> ВетЛайф</span><span>Ответственный: Руслан</span></div>
                   <button type="button" aria-label="Открыть событие"><ion-icon :icon="arrowForwardOutline" /></button>
                 </article>
                 <article class="medicine-example">
                   <div><span class="medicine-example__icon"><ion-icon :icon="medicalOutline" /></span><time datetime="20:00">20:00</time></div>
-                  <p>Лекарство</p><h3>Ветмедин</h3><span>1/2 таблетки</span>
+                  <p>Параметр</p><h3>Значение</h3><span>Дополнение</span>
                   <label class="pw-check"><input v-model="medicineDone" type="checkbox" /><span><ion-icon :icon="checkmarkOutline" /></span>{{ medicineDone ? 'Выполнено' : 'Отметить' }}</label>
                 </article>
                 <article class="timeline-example">
                   <span class="timeline-example__icon"><ion-icon :icon="flaskOutline" /></span>
-                  <div><h3>Анализ крови</h3><p>12 сентября 2026</p><small>Результаты прикреплены</small></div>
+                  <div><h3>Недоступный раздел</h3><p>Следующий этап</p><small>Данные пока не добавлены</small></div>
                   <span class="attachment"><ion-icon :icon="attachOutline" /> PDF</span>
                 </article>
               </div>

@@ -21,7 +21,7 @@ jobs:
       - run: npm run build
         env:
           VITE_SUPABASE_URL: http://127.0.0.1:54321
-          VITE_SUPABASE_ANON_KEY: ci-placeholder-key
+          VITE_SUPABASE_PUBLISHABLE_KEY: ci-placeholder-key
 
   database:
     runs-on: ubuntu-latest
@@ -47,6 +47,6 @@ jobs:
       - run: npm run build
         env:
           VITE_SUPABASE_URL: http://127.0.0.1:54321
-          VITE_SUPABASE_ANON_KEY: ci-placeholder-key
+          VITE_SUPABASE_PUBLISHABLE_KEY: ci-placeholder-key
       - run: npx cap sync ios
       - run: xcodebuild -project ios/App/App.xcodeproj -scheme App -sdk iphonesimulator -configuration Debug CODE_SIGNING_ALLOWED=NO build

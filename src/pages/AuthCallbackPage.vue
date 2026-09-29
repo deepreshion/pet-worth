@@ -47,7 +47,6 @@ onMounted(async () => {
   const code = route.query.code
   if (typeof callbackError === 'string') {
     status.value = 'error'
-    message.value = callbackError
     return
   }
   if (typeof code !== 'string') {
@@ -56,7 +55,7 @@ onMounted(async () => {
   }
   try {
     await auth.completeMagicLink(code)
-    await router.replace('/home')
+    await router.replace(auth.consumeRedirect())
   } catch (error) {
     captureTechnicalError(error, 'complete_magic_link')
     status.value = 'error'

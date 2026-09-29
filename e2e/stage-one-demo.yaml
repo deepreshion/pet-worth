@@ -1,0 +1,25 @@
+appId: app.petworth.mobile
+name: Stage 1 demo smoke
+---
+- clearState
+- launchApp
+- tapOn: "Посмотреть интерфейс без входа"
+- assertVisible: "Ваши питомцы"
+- tapOn: "Добавить питомца"
+- tapOn: "Имя *"
+- inputText: "Luna"
+- tapOn: "Собака"
+- tapOn: "Сохранить профиль"
+- assertVisible: "Редактировать профиль"
+- tapOn: "Редактировать профиль"
+- tapOn: "Порода"
+- inputText: "Labrador"
+- tapOn: "Сохранить изменения"
+- assertVisible: "Labrador"
+- tapOn: "Питомцы"
+- assertVisible: "Luna"
+- assertVisible: "Сеня"
+- stopApp
+- launchApp
+- assertVisible: "Ваши питомцы"
+- assertVisible: "Luna"

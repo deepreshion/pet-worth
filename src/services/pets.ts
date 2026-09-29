@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase'
-import type { CreatePetInput, PetSummary } from '@/types/domain'
+import type { CreatePetInput, PetSummary, UpdatePetInput } from '@/types/domain'
 import { fileToDataUrl, isDemoMode, listDemoPets, saveDemoPets } from '@/lib/demo'
 
 interface PetRow {
@@ -104,7 +104,7 @@ export async function uploadPetPhoto(petId: string, familyId: string, photo: Fil
     const pet = pets.find((item) => item.id === petId && item.familyId === familyId)
     if (!pet) throw new Error('Питомец не найден')
     pet.photoUrl = await fileToDataUrl(photo)
-    pet.photoPath = `demo/${petId}`
+    pet.photoPath = `demo/${petId}/${crypto.randomUUID()}`
     saveDemoPets(pets)
     return
   }
@@ -117,11 +117,65 @@ export async function uploadPetPhoto(petId: string, familyId: string, photo: Fil
   })
   if (uploadError) throw uploadError
 
-  const { error: updateError } = await supabase.from('pets').update({ photo_path: path }).eq('id', petId)
+  const { data: oldPath, error: updateError } = await supabase.rpc('replace_pet_photo_path', {
+    p_pet_id: petId,
+    p_new_photo_path: path,
+  })
   if (updateError) {
     await supabase.storage.from('pet-photos').remove([path])
     throw updateError
   }
+  if (oldPath && oldPath !== path) {
+    const { error: removeOldError } = await supabase.storage.from('pet-photos').remove([oldPath])
+    if (removeOldError) {
+      const { error: rollbackError } = await supabase.rpc('replace_pet_photo_path', {
+        p_pet_id: petId,
+        p_new_photo_path: oldPath,
+      })
+      if (!rollbackError) await supabase.storage.from('pet-photos').remove([path])
+      throw removeOldError
+    }
+  }
+}
+
+export async function updatePet(input: UpdatePetInput): Promise<{ petId: string; photoUploadFailed: boolean }> {
+  if (isDemoMode()) {
+    const pets = listDemoPets()
+    const pet = pets.find((item) => item.id === input.id)
+    if (!pet) throw new Error('Питомец не найден')
+    Object.assign(pet, {
+      name: input.name.trim(),
+      species: input.species,
+      breed: input.breed?.trim() || null,
+      sex: input.sex || null,
+      birthDate: input.birthDate || null,
+      birthDateApproximate: input.birthDateApproximate,
+      latestWeightKg: input.weightKg ?? pet.latestWeightKg,
+    })
+    saveDemoPets(pets)
+    if (input.photo) await uploadPetPhoto(pet.id, pet.familyId, input.photo)
+    return { petId: pet.id, photoUploadFailed: false }
+  }
+
+  const { data: petId, error } = await supabase.rpc('update_pet_with_weight', {
+    p_pet_id: input.id,
+    p_name: input.name.trim(),
+    p_species: input.species,
+    p_breed: input.breed?.trim() || null,
+    p_sex: input.sex || null,
+    p_birth_date: input.birthDate || null,
+    p_birth_date_approximate: input.birthDateApproximate,
+    p_weight_kg: input.weightKg ?? null,
+  })
+  if (error) throw error
+  if (!petId) throw new Error('Питомец не был обновлён')
+
+  let photoUploadFailed = false
+  if (input.photo) {
+    const pet = await getPet(petId)
+    try { await uploadPetPhoto(petId, pet.familyId, input.photo) } catch { photoUploadFailed = true }
+  }
+  return { petId, photoUploadFailed }
 }
 
 async function mapPet(row: PetRow): Promise<PetSummary> {
