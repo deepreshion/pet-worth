@@ -1,7 +1,8 @@
 # Модель данных и архитектура
 
-Статус: **Черновик для согласования**  
-Версия: **0.1**
+Статус: **Модель этапа 2 согласована на продуктовом уровне**
+
+Версия: **0.2**
 
 ## 1. Основные сущности
 
@@ -15,10 +16,7 @@ erDiagram
     PET ||--o{ MEDICAL_EVENT : has
     PET ||--o{ WEIGHT_RECORD : has
     MEDICAL_EVENT ||--o{ ATTACHMENT : contains
-    MEDICAL_EVENT ||--o{ REMINDER : schedules
-    REMINDER ||--o{ REMINDER_ASSIGNEE : assigned_to
-    USER ||--o{ REMINDER_ASSIGNEE : receives
-    CLINIC ||--o{ MEDICAL_EVENT : referenced_by
+    MEDICAL_EVENT ||--o| REMINDER : schedules
     USER ||--o{ SHARE_LINK : creates
     PET ||--o{ SHARE_LINK : exposes
     FAMILY ||--o{ ACTIVITY_LOG : records
@@ -71,10 +69,10 @@ erDiagram
         string type
         string title
         text notes
-        datetime occurred_at
-        string clinic_text
-        string doctor_text
-        json type_specific_data
+        date event_date
+        time event_time
+        datetime created_at
+        datetime updated_at
     }
     ATTACHMENT {
         uuid id
@@ -88,13 +86,7 @@ erDiagram
         uuid id
         uuid event_id
         datetime scheduled_at
-        string status
-        datetime completed_at
-    }
-    REMINDER_ASSIGNEE {
-        uuid reminder_id
-        uuid user_id
-        boolean notifications_enabled
+        datetime created_at
     }
     DEVICE {
         uuid id
@@ -108,13 +100,6 @@ erDiagram
         decimal value
         string unit
         date measured_at
-    }
-    CLINIC {
-        string external_id
-        string provider
-        string name
-        decimal latitude
-        decimal longitude
     }
     SHARE_LINK {
         uuid id
@@ -133,6 +118,8 @@ erDiagram
         datetime created_at
     }
 ```
+
+Во втором срезе `MEDICAL_EVENT.type` ограничен значениями `vaccination`, `vet_visit`, `analysis` и `procedure`. Поле `event_time` требуется только при включённом напоминании. Напоминание всегда планируется за 24 часа до сочетания `event_date` и `event_time` и не имеет пользовательского статуса. Специализированные медицинские поля и отдельная модель лекарств в этот срез не входят. Курсы лекарств, их расписание и журнал фактических приёмов проектируются отдельно для третьего этапа; семейный доступ переносится на четвёртый этап.
 
 ## 2. Правила владения и доступа
 
@@ -244,4 +231,4 @@ flowchart LR
 3. В каких странах планируется первый запуск? От этого зависит поставщик карт и юридические требования.
 4. Какие форматы вложений обязательны: фото, PDF, лабораторные документы других форматов?
 5. Какой максимальный объём хранения на одного пользователя допустим на старте?
-6. Нужен ли семейный доступ в первой версии?
+6. Как синхронизировать расписание и фактические приёмы лекарств между устройствами до появления семейного доступа на четвёртом этапе?
