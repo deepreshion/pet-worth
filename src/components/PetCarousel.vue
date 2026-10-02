@@ -10,7 +10,7 @@
         <div class="pet-slide__body">
           <strong>{{ pet.name }}</strong>
           <span>{{ speciesLabel(pet.species) }}<template v-if="pet.breed">, {{ pet.breed }}</template></span>
-<!--           <span>{{ formatPetAge(pet.birthDate, pet.birthDateApproximate) || 'Возраст не указан' }}<template v-if="pet.latestWeightKg">, {{ pet.latestWeightKg.toLocaleString('ru-RU') }} кг</template></span> -->
+          <span>{{ formatPetAge(pet.birthDate, pet.birthDateApproximate) || 'Возраст не указан' }}<template v-if="pet.latestWeightKg">, {{ pet.latestWeightKg.toLocaleString('ru-RU') }} кг</template></span>
         </div>
       </router-link>
     </div>

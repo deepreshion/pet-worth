@@ -42,3 +42,17 @@ export async function updateCurrentProfile(input: UpdateProfileInput): Promise<U
   if (error) throw error
   return { id: data.id, email: userData.user.email ?? '', displayName: data.display_name, timezone: data.timezone }
 }
+
+export async function syncCurrentProfileTimezone() {
+  const deviceTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
+  if (isDemoMode()) {
+    const profile = demoProfile()
+    if (profile.timezone !== deviceTimezone) window.localStorage.setItem(demoProfileKey, JSON.stringify({ ...profile, timezone: deviceTimezone }))
+    return deviceTimezone
+  }
+  const { data: userData, error: userError } = await supabase.auth.getUser()
+  if (userError || !userData.user) return null
+  const { error } = await supabase.from('profiles').update({ timezone: deviceTimezone }).eq('id', userData.user.id)
+  if (error) throw error
+  return deviceTimezone
+}

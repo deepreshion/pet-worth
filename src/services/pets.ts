@@ -29,7 +29,8 @@ export async function listPets(): Promise<PetSummary[]> {
     .order('measured_at', { referencedTable: 'weight_records', ascending: false })
     .limit(1, { referencedTable: 'weight_records' })
   if (error) throw error
-  return Promise.all(((data ?? []) as unknown as PetRow[]).map(mapPet))
+  const editableFamilies = await getEditableFamilyIds()
+  return Promise.all(((data ?? []) as unknown as PetRow[]).map((row) => mapPet(row, editableFamilies.has(row.family_id))))
 }
 
 export async function getPet(id: string): Promise<PetSummary> {
@@ -46,7 +47,9 @@ export async function getPet(id: string): Promise<PetSummary> {
     .limit(1, { referencedTable: 'weight_records' })
     .single()
   if (error) throw error
-  return mapPet(data as unknown as PetRow)
+  const editableFamilies = await getEditableFamilyIds()
+  const row = data as unknown as PetRow
+  return mapPet(row, editableFamilies.has(row.family_id))
 }
 
 export async function createPet(input: CreatePetInput): Promise<{ petId: string; photoUploadFailed: boolean }> {
@@ -67,6 +70,7 @@ export async function createPet(input: CreatePetInput): Promise<{ petId: string;
         photoPath: photoUrl ? `demo/${petId}` : null,
         photoUrl,
         latestWeightKg: input.weightKg ?? null,
+        canEdit: true,
       })
       saveDemoPets(pets)
     }
@@ -178,7 +182,15 @@ export async function updatePet(input: UpdatePetInput): Promise<{ petId: string;
   return { petId, photoUploadFailed }
 }
 
-async function mapPet(row: PetRow): Promise<PetSummary> {
+async function getEditableFamilyIds() {
+  const { data: userData, error: userError } = await supabase.auth.getUser()
+  if (userError || !userData.user) throw userError ?? new Error('Требуется вход')
+  const { data, error } = await supabase.from('family_memberships').select('family_id').eq('user_id', userData.user.id).in('role', ['owner', 'member'])
+  if (error) throw error
+  return new Set((data ?? []).map((item) => item.family_id))
+}
+
+async function mapPet(row: PetRow, canEdit: boolean): Promise<PetSummary> {
   let photoUrl: string | null = null
   if (row.photo_path) {
     const { data } = await supabase.storage.from('pet-photos').createSignedUrl(row.photo_path, 3600)
@@ -196,5 +208,6 @@ async function mapPet(row: PetRow): Promise<PetSummary> {
     photoPath: row.photo_path,
     photoUrl,
     latestWeightKg: row.weight_records?.[0]?.value_kg ?? null,
+    canEdit,
   }
 }

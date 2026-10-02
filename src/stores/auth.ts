@@ -4,6 +4,9 @@ import type { Session, User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { captureTechnicalError, trackProductEvent } from '@/lib/monitoring'
 import { disableDemoMode, enableDemoMode, isDemoMode } from '@/lib/demo'
+import { syncMedicalNotifications } from '@/services/notifications'
+import { syncCurrentProfileTimezone } from '@/services/profile'
+import { reconcileStorageCleanup } from '@/services/storageCleanup'
 
 interface AuthState {
   session: Session | null
@@ -36,6 +39,11 @@ export const useAuthStore = defineStore('auth', {
       supabase.auth.onAuthStateChange((_event, session) => {
         this.session = session
         this.user = session?.user ?? null
+        void (async () => {
+          if (session) await syncCurrentProfileTimezone()
+          if (session) await reconcileStorageCleanup()
+          await syncMedicalNotifications()
+        })().catch((error) => captureTechnicalError(error, 'reconcile_device_auth_change'))
       })
     },
     async sendMagicLink(email: string) {
@@ -53,6 +61,9 @@ export const useAuthStore = defineStore('auth', {
       if (error) throw error
       this.session = data.session
       this.user = data.user
+      await syncCurrentProfileTimezone()
+      await reconcileStorageCleanup()
+      void syncMedicalNotifications().catch((error) => captureTechnicalError(error, 'sync_medical_notifications_sign_in'))
       trackProductEvent('sign_in_completed')
     },
     async signOut() {
@@ -66,6 +77,7 @@ export const useAuthStore = defineStore('auth', {
       if (error) throw error
       this.session = null
       this.user = null
+      void syncMedicalNotifications().catch((error) => captureTechnicalError(error, 'sync_medical_notifications_sign_out'))
     },
     rememberRedirect(path: string) {
       if (isSafeInternalPath(path)) window.localStorage.setItem(redirectKey, path)

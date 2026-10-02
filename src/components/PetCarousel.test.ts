@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import PetCarousel from './PetCarousel.vue'
 import type { PetSummary } from '@/types/domain'
 
-const pet = (id: string, name: string): PetSummary => ({ id, name, familyId: 'family', species: 'cat', breed: 'Сибирская', sex: 'male', birthDate: '2023-05-23', birthDateApproximate: true, photoPath: null, photoUrl: null, latestWeightKg: 4.8 })
+const pet = (id: string, name: string): PetSummary => ({ id, name, familyId: 'family', species: 'cat', breed: 'Сибирская', sex: 'male', birthDate: '2023-05-23', birthDateApproximate: true, photoPath: null, photoUrl: null, latestWeightKg: 4.8, canEdit: true })
 
 describe('PetCarousel', () => {
   it('does not show a position indicator for one pet', () => {
