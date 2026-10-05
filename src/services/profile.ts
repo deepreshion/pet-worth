@@ -1,3 +1,4 @@
+import { t } from '@/i18n'
 import { supabase } from '@/lib/supabase'
 import { isDemoMode } from '@/lib/demo'
 import type { UpdateProfileInput, UserProfile } from '@/types/domain'
@@ -13,7 +14,7 @@ function demoProfile(): UserProfile {
 export async function getCurrentProfile(): Promise<UserProfile> {
   if (isDemoMode()) return demoProfile()
   const { data: userData, error: userError } = await supabase.auth.getUser()
-  if (userError || !userData.user) throw userError ?? new Error('Пользователь не найден')
+  if (userError || !userData.user) throw userError ?? new Error(t('Пользователь не найден'))
   const { data, error } = await supabase.from('profiles').select('id, display_name, timezone').eq('id', userData.user.id).single()
   if (error) throw error
   return {
@@ -32,7 +33,7 @@ export async function updateCurrentProfile(input: UpdateProfileInput): Promise<U
     return updated
   }
   const { data: userData, error: userError } = await supabase.auth.getUser()
-  if (userError || !userData.user) throw userError ?? new Error('Пользователь не найден')
+  if (userError || !userData.user) throw userError ?? new Error(t('Пользователь не найден'))
   const { data, error } = await supabase
     .from('profiles')
     .update({ display_name: input.displayName.trim(), timezone: deviceTimezone })

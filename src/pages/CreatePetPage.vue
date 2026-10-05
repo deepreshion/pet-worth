@@ -1,11 +1,12 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true"><ion-toolbar><ion-buttons slot="start"><ion-back-button default-href="/home" text="" /></ion-buttons><ion-title>Добавить питомца</ion-title></ion-toolbar></ion-header>
+    <ion-header :translucent="true"><ion-toolbar><ion-buttons slot="start"><ion-back-button default-href="/home" text="" /></ion-buttons><ion-title> {{ t('Добавить питомца') }} </ion-title></ion-toolbar></ion-header>
     <ion-content :fullscreen="true"><pet-form :submitting="isPending" :error="submitError" @save="save" /></ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
+import { t } from '@/i18n'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, toastController } from '@ionic/vue'
@@ -25,13 +26,13 @@ async function save(values: PetFormSubmission) {
     const result = await mutateAsync({ ...values, requestId })
     trackProductEvent('pet_created')
     if (result.photoUploadFailed) {
-      const toast = await toastController.create({ message: 'Профиль сохранён без фото. Его можно добавить позже.', duration: 4500, color: 'warning' })
+      const toast = await toastController.create({ message: t('Профиль сохранён без фото. Его можно добавить позже.'), duration: 4500, color: 'warning' })
       await toast.present()
     }
     await router.replace(`/pets/${result.petId}`)
   } catch (error) {
     captureTechnicalError(error, 'create_pet')
-    submitError.value = 'Не удалось сохранить профиль. Проверьте соединение и попробуйте снова.'
+    submitError.value = t('Не удалось сохранить профиль. Проверьте соединение и попробуйте снова.')
   }
 }
 </script>

@@ -9,15 +9,15 @@
                 <template v-if="status === 'loading'">
                   <ion-item lines="none">
                     <ion-spinner slot="start" name="crescent" />
-                    <ion-label><h1>Входим в Pet Worth</h1><p>Проверяем ссылку из письма.</p></ion-label>
+                    <ion-label><h1> {{ t('Входим в Pet Worth') }} </h1><p> {{ t('Проверяем ссылку из письма.') }} </p></ion-label>
                   </ion-item>
                 </template>
                 <template v-else>
                   <ion-item lines="none">
                     <ion-icon slot="start" :icon="alertCircleOutline" color="danger" />
-                    <ion-label class="ion-text-wrap"><h1>Ссылка не сработала</h1><p>{{ message }}</p></ion-label>
+                    <ion-label class="ion-text-wrap"><h1> {{ t('Ссылка не сработала') }} </h1><p>{{ message }}</p></ion-label>
                   </ion-item>
-                  <ion-button expand="block" router-link="/login">Запросить новую ссылку</ion-button>
+                  <ion-button expand="block" router-link="/login"> {{ t('Запросить новую ссылку') }} </ion-button>
                 </template>
               </ion-card-content>
             </ion-card>
@@ -29,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
+import { t } from '@/i18n'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { IonButton, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonIcon, IonItem, IonLabel, IonPage, IonRow, IonSpinner } from '@ionic/vue'
@@ -40,7 +41,7 @@ const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
 const status = ref<'loading' | 'error'>('loading')
-const message = ref('Ссылка могла истечь или уже была использована.')
+const message = ref(t('Ссылка могла истечь или уже была использована.'))
 
 onMounted(async () => {
   const callbackError = route.query.error

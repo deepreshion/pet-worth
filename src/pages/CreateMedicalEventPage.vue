@@ -1,10 +1,10 @@
 <template>
   <ion-page>
-    <ion-header><ion-toolbar><ion-buttons slot="start"><ion-back-button :default-href="`/pets/${petId}`" text="" /></ion-buttons><ion-title>Новое событие</ion-title></ion-toolbar></ion-header>
+    <ion-header><ion-toolbar><ion-buttons slot="start"><ion-back-button :default-href="`/pets/${petId}`" text="" /></ion-buttons><ion-title> {{ t('Новое событие') }} </ion-title></ion-toolbar></ion-header>
     <ion-content class="page-content">
-      <section v-if="pet && !pet.canEdit" class="state-card"><h1>Добавление недоступно</h1><p>У вас есть доступ только к просмотру истории этого питомца.</p></section>
+      <section v-if="pet && !pet.canEdit" class="state-card"><h1> {{ t('Добавление недоступно') }} </h1><p> {{ t('У вас есть доступ только к просмотру истории этого питомца.') }} </p></section>
       <section v-else-if="!selectedType" class="type-picker">
-        <h1>Что произошло?</h1><p>Выберите тип медицинского события.</p>
+        <h1> {{ t('Что произошло?') }} </h1><p> {{ t('Выберите тип медицинского события.') }} </p>
         <button v-for="(meta, type) in medicalEventMeta" :key="type" type="button" @click="selectedType = type"><span class="event-dot" :style="{ background: meta.color }" />{{ meta.label }}<ion-icon :icon="chevronForwardOutline" /></button>
       </section>
       <medical-event-form v-else-if="profile" :pet-id="petId" :initial-type="selectedType" :profile-timezone="profile.timezone" />
@@ -12,6 +12,7 @@
   </ion-page>
 </template>
 <script setup lang="ts">
+import { t } from '@/i18n'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { IonBackButton, IonButtons, IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar } from '@ionic/vue'

@@ -1,10 +1,11 @@
+import { t, intlLocale } from '@/i18n'
 import type { MedicalEvent, MedicalEventType } from '@/types/domain'
 
 export const medicalEventMeta: Record<MedicalEventType, { label: string; color: string }> = {
-  vaccination: { label: 'Вакцинация', color: '#35a854' },
-  vet_visit: { label: 'Приём врача', color: '#8b5cf6' },
-  analysis: { label: 'Анализ', color: '#348bd4' },
-  procedure: { label: 'Процедура или операция', color: '#e88432' },
+  vaccination: { get label() { return t('Вакцинация') }, color: '#35a854' },
+  vet_visit: { get label() { return t('Приём врача') }, color: '#8b5cf6' },
+  analysis: { get label() { return t('Анализ') }, color: '#348bd4' },
+  procedure: { get label() { return t('Процедура или операция') }, color: '#e88432' },
 }
 
 export function localDateString(date = new Date()) {
@@ -66,14 +67,14 @@ export function calendarDots(events: MedicalEvent[]) {
 }
 
 export function formatEventDate(value: string) {
-  return new Date(`${value}T00:00:00`).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })
+  return new Date(`${value}T00:00:00`).toLocaleDateString(intlLocale.value, { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 export const acceptedMedicalMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif', 'application/pdf']
 export const maxMedicalFileSize = 20 * 1024 * 1024
 
 export function validateMedicalFiles(files: File[]) {
-  if (files.some((file) => !acceptedMedicalMimeTypes.includes(file.type))) return 'Можно прикрепить JPG, PNG, WebP, HEIC/HEIF или PDF.'
-  if (files.some((file) => file.size <= 0 || file.size > maxMedicalFileSize)) return 'Размер каждого файла должен быть не больше 20 МБ.'
+  if (files.some((file) => !acceptedMedicalMimeTypes.includes(file.type))) return t('Можно прикрепить JPG, PNG, WebP, HEIC/HEIF или PDF.')
+  if (files.some((file) => file.size <= 0 || file.size > maxMedicalFileSize)) return t('Размер каждого файла должен быть не больше 20 МБ.')
   return null
 }

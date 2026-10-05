@@ -14,6 +14,7 @@ vi.mock('@/lib/supabase', () => ({ supabase: {
   from: () => ({ select: () => ({ gt: mocks.gt }) }),
 } }))
 
+import { setLocale } from '@/i18n'
 import { syncMedicalNotifications } from './notifications'
 
 describe('notification reconciliation', () => {
@@ -29,6 +30,15 @@ describe('notification reconciliation', () => {
     mocks.gt.mockReset().mockResolvedValue({ data: [{ scheduled_at: '2099-01-01T09:00:00Z', notification_id: 22, medical_events: { id: 'event', title: 'Врач', pets: { name: 'Сеня' } } }], error: null })
     mocks.cancel.mockReset().mockResolvedValue(undefined)
     mocks.schedule.mockReset().mockResolvedValue(undefined)
+  })
+
+  it('replaces reminder text in the selected language while retaining user titles and pet names', async () => {
+    await setLocale('en')
+    await syncMedicalNotifications()
+    expect(mocks.schedule).toHaveBeenCalledWith({ notifications: [expect.objectContaining({ title: 'Tomorrow: Врач', body: 'Сеня' })] })
+    await setLocale('ru')
+    await syncMedicalNotifications()
+    expect(mocks.schedule).toHaveBeenLastCalledWith({ notifications: [expect.objectContaining({ title: 'Завтра: Врач', body: 'Сеня' })] })
   })
 
   it('cancels stale app-owned ids and replaces current schedules from database', async () => {

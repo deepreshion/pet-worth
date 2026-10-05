@@ -1,3 +1,4 @@
+import { initializeLocale } from '@/i18n'
 import { createApp } from 'vue'
 import { IonicVue } from '@ionic/vue'
 import { createPinia } from 'pinia'
@@ -21,6 +22,8 @@ import { useAuthStore } from './stores/auth'
 import { captureTechnicalError, initializeMonitoring } from './lib/monitoring'
 import { initializeTheme } from './composables/useTheme'
 import { reconcileStorageCleanup } from '@/services/storageCleanup'
+
+await initializeLocale()
 
 const app = createApp(App)
 const pinia = createPinia()

@@ -1,3 +1,4 @@
+import { t } from '@/i18n'
 import { supabase } from '@/lib/supabase'
 import type { CreatePetInput, PetSummary, UpdatePetInput } from '@/types/domain'
 import { fileToDataUrl, isDemoMode, listDemoPets, saveDemoPets } from '@/lib/demo'
@@ -36,7 +37,7 @@ export async function listPets(): Promise<PetSummary[]> {
 export async function getPet(id: string): Promise<PetSummary> {
   if (isDemoMode()) {
     const pet = listDemoPets().find((item) => item.id === id)
-    if (!pet) throw new Error('Питомец не найден')
+    if (!pet) throw new Error(t('Питомец не найден'))
     return pet
   }
   const { data, error } = await supabase
@@ -89,7 +90,7 @@ export async function createPet(input: CreatePetInput): Promise<{ petId: string;
   if (error) throw error
 
   const result = data[0]
-  if (!result) throw new Error('Питомец не был создан')
+  if (!result) throw new Error(t('Питомец не был создан'))
 
   let photoUploadFailed = false
   if (input.photo) {
@@ -106,7 +107,7 @@ export async function uploadPetPhoto(petId: string, familyId: string, photo: Fil
   if (isDemoMode()) {
     const pets = listDemoPets()
     const pet = pets.find((item) => item.id === petId && item.familyId === familyId)
-    if (!pet) throw new Error('Питомец не найден')
+    if (!pet) throw new Error(t('Питомец не найден'))
     pet.photoUrl = await fileToDataUrl(photo)
     pet.photoPath = `demo/${petId}/${crypto.randomUUID()}`
     saveDemoPets(pets)
@@ -146,7 +147,7 @@ export async function updatePet(input: UpdatePetInput): Promise<{ petId: string;
   if (isDemoMode()) {
     const pets = listDemoPets()
     const pet = pets.find((item) => item.id === input.id)
-    if (!pet) throw new Error('Питомец не найден')
+    if (!pet) throw new Error(t('Питомец не найден'))
     Object.assign(pet, {
       name: input.name.trim(),
       species: input.species,
@@ -172,7 +173,7 @@ export async function updatePet(input: UpdatePetInput): Promise<{ petId: string;
     p_weight_kg: input.weightKg ?? null,
   })
   if (error) throw error
-  if (!petId) throw new Error('Питомец не был обновлён')
+  if (!petId) throw new Error(t('Питомец не был обновлён'))
 
   let photoUploadFailed = false
   if (input.photo) {
@@ -184,7 +185,7 @@ export async function updatePet(input: UpdatePetInput): Promise<{ petId: string;
 
 async function getEditableFamilyIds() {
   const { data: userData, error: userError } = await supabase.auth.getUser()
-  if (userError || !userData.user) throw userError ?? new Error('Требуется вход')
+  if (userError || !userData.user) throw userError ?? new Error(t('Требуется вход'))
   const { data, error } = await supabase.from('family_memberships').select('family_id').eq('user_id', userData.user.id).in('role', ['owner', 'member'])
   if (error) throw error
   return new Set((data ?? []).map((item) => item.family_id))

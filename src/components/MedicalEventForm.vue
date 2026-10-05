@@ -1,35 +1,36 @@
 <template>
   <form class="medical-form" @submit.prevent="submit">
-    <label class="field-label">Тип события
+    <label class="field-label">{{ t('Тип события') }}
       <select v-model="type" class="native-field">
         <option v-for="(meta, value) in medicalEventMeta" :key="value" :value="value">{{ meta.label }}</option>
       </select>
     </label>
-    <label class="field-label">Дата *<input v-model="eventDate" class="native-field" type="date" required /></label>
-    <label class="field-label">Название *<input v-model="title" class="native-field" maxlength="120" required /></label>
-    <label class="field-label">Заметка<textarea v-model="notes" class="native-field" rows="5" maxlength="10000" placeholder="Результаты, рекомендации или важные детали" /></label>
+    <label class="field-label"> {{ t('Дата *') }} <input v-model="eventDate" class="native-field" type="date" required /></label>
+    <label class="field-label"> {{ t('Название *') }} <input v-model="title" class="native-field" maxlength="120" required /></label>
+    <label class="field-label"> {{ t('Заметка') }} <textarea v-model="notes" class="native-field" rows="5" maxlength="10000" :placeholder="t('Результаты, рекомендации или важные детали')" /></label>
 
     <section class="attachment-picker" aria-labelledby="attachments-title">
-      <div><h2 id="attachments-title">Вложения</h2><p>Фото или PDF, до 20 МБ каждый.</p></div>
-      <ion-button type="button" fill="outline" @click="fileInput?.click()"><ion-icon slot="start" :icon="attachOutline" />Добавить</ion-button>
+      <div><h2 id="attachments-title"> {{ t('Вложения') }} </h2><p> {{ t('Фото или PDF, до 20 МБ каждый.') }} </p></div>
+      <ion-button type="button" fill="outline" @click="fileInput?.click()"><ion-icon slot="start" :icon="attachOutline" /> {{ t('Добавить') }} </ion-button>
       <input ref="fileInput" hidden type="file" multiple accept="image/jpeg,image/png,image/webp,image/heic,image/heif,application/pdf" @change="pickFiles" />
       <ul v-if="retained.length || files.length" class="attachment-list">
-        <li v-for="attachment in retained" :key="attachment.id"><span>{{ attachment.fileName }}</span><button type="button" aria-label="Убрать вложение" @click="removeRetained(attachment.id)">Убрать</button></li>
-        <li v-for="(file, index) in files" :key="`${file.name}-${index}`"><span>{{ file.name }}</span><button type="button" aria-label="Убрать новый файл" @click="files.splice(index, 1)">Убрать</button></li>
+        <li v-for="attachment in retained" :key="attachment.id"><span>{{ attachment.fileName }}</span><button type="button" :aria-label="t('Убрать вложение')" @click="removeRetained(attachment.id)"> {{ t('Убрать') }} </button></li>
+        <li v-for="(file, index) in files" :key="`${file.name}-${index}`"><span>{{ file.name }}</span><button type="button" :aria-label="t('Убрать новый файл')" @click="files.splice(index, 1)"> {{ t('Убрать') }} </button></li>
       </ul>
     </section>
 
     <section v-if="reminderEligible" class="reminder-card">
-      <ion-toggle v-model="reminderEnabled">Напомнить за 24 часа</ion-toggle>
-      <label v-if="reminderEnabled" class="field-label">Время события<input v-model="eventTime" class="native-field" type="time" required /></label>
+      <ion-toggle v-model="reminderEnabled"> {{ t('Напомнить за 24 часа') }} </ion-toggle>
+      <label v-if="reminderEnabled" class="field-label"> {{ t('Время события') }} <input v-model="eventTime" class="native-field" type="time" required /></label>
     </section>
-    <p v-else-if="eventDate > today" class="form-hint">Напоминание недоступно: до выбранного времени осталось меньше 24 часов.</p>
+    <p v-else-if="eventDate > today" class="form-hint"> {{ t('Напоминание недоступно: до выбранного времени осталось меньше 24 часов.') }} </p>
     <ion-text v-if="error" color="danger" role="alert"><p>{{ error }}</p></ion-text>
-    <ion-button expand="block" type="submit" :disabled="pending"><ion-spinner v-if="pending" slot="start" name="crescent" />{{ pending ? 'Сохраняем…' : 'Сохранить событие' }}</ion-button>
+    <ion-button expand="block" type="submit" :disabled="pending"><ion-spinner v-if="pending" slot="start" name="crescent" />{{ pending ? t('Сохраняем…') : t('Сохранить событие') }}</ion-button>
   </form>
 </template>
 
 <script setup lang="ts">
+import { t } from '@/i18n'
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
 import { IonButton, IonIcon, IonSpinner, IonText, IonToggle } from '@ionic/vue'
@@ -72,7 +73,7 @@ watch(reminderEligible, (eligible) => { if (!eligible) reminderEnabled.value = f
 function beforeUnload(event: Event) { if (dirty.value && !saved.value) event.preventDefault() }
 window.addEventListener('beforeunload', beforeUnload)
 onBeforeUnmount(() => window.removeEventListener('beforeunload', beforeUnload))
-onBeforeRouteLeave(() => !dirty.value || saved.value || window.confirm('Закрыть форму и потерять несохранённые изменения?'))
+onBeforeRouteLeave(() => !dirty.value || saved.value || window.confirm(t('Закрыть форму и потерять несохранённые изменения?')))
 
 function pickFiles(event: Event) {
   const selected = Array.from((event.target as HTMLInputElement).files ?? [])
@@ -86,7 +87,7 @@ function removeRetained(id: string) { retained.value = retained.value.filter((it
 
 async function submit() {
   error.value = ''
-  if (!title.value.trim() || !eventDate.value) { error.value = 'Укажите дату и название.'; return }
+  if (!title.value.trim() || !eventDate.value) { error.value = t('Укажите дату и название.'); return }
   try {
     const result = await mutateAsync({
       id: props.event?.id,
@@ -103,12 +104,12 @@ async function submit() {
       retainedAttachmentIds: retained.value.map((item) => item.id),
     })
     saved.value = true
-    if (result.reminderWarning) window.alert('Событие сохранено, но системные уведомления недоступны или запрещены. Напоминание не сработает.')
+    if (result.reminderWarning) window.alert(t('Событие сохранено, но системные уведомления недоступны или запрещены. Напоминание не сработает.'))
     if (result.cleanupWarnings.length) window.alert(result.cleanupWarnings.join('\n'))
     await router.replace(`/medical-events/${result.eventId}`)
   } catch (caught) {
     captureTechnicalError(caught, 'save_medical_event')
-    error.value = caught instanceof Error && caught.message.startsWith('Напоминание') ? caught.message : 'Не удалось сохранить событие. Данные и выбранные файлы остались в форме.'
+    error.value = caught instanceof Error && caught.message.startsWith(t('Напоминание')) ? caught.message : t('Не удалось сохранить событие. Данные и выбранные файлы остались в форме.')
   }
 }
 </script>

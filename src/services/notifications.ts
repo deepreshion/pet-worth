@@ -1,3 +1,4 @@
+import { t } from '@/i18n'
 import { Capacitor } from '@capacitor/core'
 import { LocalNotifications, type PendingLocalNotificationSchema } from '@capacitor/local-notifications'
 import type { Router } from 'vue-router'
@@ -24,7 +25,7 @@ export async function scheduleEventNotification(input: { id: number; eventId: st
   if (permission.display === 'prompt' || permission.display === 'prompt-with-rationale') permission = await LocalNotifications.requestPermissions()
   if (permission.display !== 'granted') return { scheduled: false, denied: true }
   await LocalNotifications.cancel({ notifications: [{ id: input.id }] })
-  await LocalNotifications.schedule({ notifications: [{ id: input.id, title: `Завтра: ${input.title}`, body: input.petName,
+  await LocalNotifications.schedule({ notifications: [{ id: input.id, title: t('Завтра: {title}', { title: input.title }), body: input.petName,
     schedule: { at: input.at, allowWhileIdle: true }, extra: { source: 'pet-worth-medical', eventId: input.eventId } }] })
   writeRegistry([...new Set([...readRegistry(), input.id])])
   return { scheduled: true, denied: false }
@@ -62,8 +63,8 @@ export async function syncMedicalNotifications() {
   if (toReplace.length) await LocalNotifications.cancel({ notifications: toReplace.map((id) => ({ id })) })
   const notifications: PendingLocalNotificationSchema[] = desired.map((item) => ({
     id: item.notification_id,
-    title: `Завтра: ${item.medical_events?.title ?? 'Событие'}`,
-    body: item.medical_events?.pets?.name ?? 'Питомец',
+    title: t('Завтра: {title}', { title: item.medical_events?.title ?? t('Событие') }),
+    body: item.medical_events?.pets?.name ?? t('Питомец'),
     schedule: { at: new Date(item.scheduled_at), allowWhileIdle: true },
     extra: { source: 'pet-worth-medical', eventId: item.medical_events?.id },
   }))

@@ -1,3 +1,4 @@
+import { t, locale } from '@/i18n'
 export function approximateBirthDate(years: number, months: number, today = new Date()): string {
   const totalMonths = years * 12 + months
   const date = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()))
@@ -21,8 +22,8 @@ export function formatPetAge(birthDate: string | null, approximate: boolean, tod
   months = Math.max(0, months)
   const years = Math.floor(months / 12)
   const rest = months % 12
-  const parts = [years ? `${years} ${plural(years, 'год', 'года', 'лет')}` : '', rest ? `${rest} мес.` : ''].filter(Boolean)
-  return `${approximate ? '≈ ' : ''}${parts.join(' ') || 'меньше месяца'}`
+  const parts = [years ? `${years} ${locale.value === 'en' ? (years === 1 ? 'year' : 'years') : plural(years, t('год'), t('года'), t('лет'))}` : '', rest ? `${rest} ${t('мес.')}` : ''].filter(Boolean)
+  return `${approximate ? '≈ ' : ''}${parts.join(' ') || t('меньше месяца')}`
 }
 
 function plural(value: number, one: string, few: string, many: string) {
@@ -35,8 +36,8 @@ function plural(value: number, one: string, few: string, many: string) {
 
 export function validatePhoto(file: File): string | null {
   const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif']
-  if (!allowed.includes(file.type)) return 'Поддерживаются JPEG, PNG, WebP и HEIC.'
-  if (file.size > 10 * 1024 * 1024) return 'Фотография должна быть не больше 10 МБ.'
+  if (!allowed.includes(file.type)) return t('Поддерживаются JPEG, PNG, WebP и HEIC.')
+  if (file.size > 10 * 1024 * 1024) return t('Фотография должна быть не больше 10 МБ.')
   return null
 }
 

@@ -45,6 +45,18 @@ npm run cap:sync
 open ios/App/App.xcodeproj
 ```
 
+Для сборки, синхронизации и запуска приложения на выбранном iOS Simulator одной командой:
+
+```bash
+npm run preview:ios
+```
+
+По умолчанию команда предложит выбрать устройство. Его также можно указать сразу:
+
+```bash
+npm run preview:ios -- --target-name "iPhone 16 Pro"
+```
+
 В Xcode выберите Development Team только для запуска на физическом устройстве. URL scheme `petworth` уже настроен для callback `petworth://auth/callback`. Разрешение на локальные уведомления приложение запрашивает только при включении напоминания.
 
 ## Подключение staging
