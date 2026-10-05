@@ -2,7 +2,11 @@ import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  base: mode === 'pages' ? '/pet-worth/' : '/',
+  build: {
+    outDir: mode === 'pages' ? 'dist-pages' : 'dist',
+  },
   plugins: [vue()],
   resolve: {
     alias: {
@@ -13,4 +17,4 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
   },
-})
+}))

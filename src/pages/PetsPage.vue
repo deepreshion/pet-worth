@@ -4,7 +4,7 @@
     <ion-content :fullscreen="true" class="page-content">
       <div v-if="isPending" class="pet-list" aria-busy="true" :aria-label="t('Загрузка питомцев')"><div v-for="item in 3" :key="item" class="pet-list-card skeleton-card"><ion-skeleton-text :animated="true" /></div></div>
       <section v-else-if="isError" class="state-card"><h2> {{ t('Не удалось загрузить питомцев') }} </h2><p> {{ t('Проверьте соединение и повторите попытку.') }} </p><ion-button @click="refetch()"> {{ t('Повторить') }} </ion-button></section>
-      <section v-else-if="!pets?.length" class="state-card"><img src="/assets/senya-peek.png" :alt="t('Кот Сеня выглядывает')" /><h2> {{ t('Питомцев пока нет') }} </h2><p> {{ t('Создайте первый профиль. Для начала достаточно имени и вида.') }} </p><ion-button router-link="/pets/new"> {{ t('Добавить первого питомца') }} </ion-button></section>
+      <section v-else-if="!pets?.length" class="state-card"><img :src="`${baseUrl}assets/senya-peek.png`" :alt="t('Кот Сеня выглядывает')" /><h2> {{ t('Питомцев пока нет') }} </h2><p> {{ t('Создайте первый профиль. Для начала достаточно имени и вида.') }} </p><ion-button router-link="/pets/new"> {{ t('Добавить первого питомца') }} </ion-button></section>
       <div v-else class="pet-list" role="list">
         <router-link v-for="pet in pets" :key="pet.id" :to="`/pets/${pet.id}`" class="pet-list-card" role="listitem">
           <pet-avatar :src="pet.photoUrl" :name="pet.name" :species="pet.species" />
@@ -18,6 +18,7 @@
 </template>
 
 <script setup lang="ts">
+const baseUrl = import.meta.env.BASE_URL
 import { t, intlLocale } from '@/i18n'
 import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonPage, IonSkeletonText, IonTitle, IonToolbar } from '@ionic/vue'
 import { addOutline, chevronForwardOutline } from 'ionicons/icons'

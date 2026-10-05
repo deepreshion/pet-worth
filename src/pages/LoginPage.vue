@@ -13,7 +13,7 @@
 
               <ion-card-content>
                 <language-picker />
-                <form v-if="!sent" @submit.prevent="submit">
+                <form v-if="!pagesPreview && !sent" @submit.prevent="submit">
                   <ion-input
                     v-model="email"
                     type="email"
@@ -31,7 +31,7 @@
                   </ion-button>
                 </form>
 
-                <template v-else>
+                <template v-else-if="!pagesPreview">
                   <ion-item lines="none">
                     <ion-icon slot="start" :icon="checkmarkCircleOutline" color="success" />
                     <ion-label><h2> {{ t('Проверьте почту') }} </h2><p>{{ t('Ссылка отправлена на {email}.', { email }) }}</p></ion-label>
@@ -68,6 +68,7 @@ import { isDemoAvailable } from '@/lib/demo'
 const auth = useAuthStore()
 const router = useRouter()
 const demoAvailable = isDemoAvailable()
+const pagesPreview = import.meta.env.MODE === 'pages'
 const email = ref('')
 const sending = ref(false)
 const sent = ref(false)

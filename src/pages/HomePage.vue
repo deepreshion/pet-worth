@@ -4,7 +4,7 @@
     <ion-content :fullscreen="true" class="page-content">
       <div v-if="isPending" class="carousel-skeleton" :aria-label="t('Загрузка питомцев')" aria-busy="true"><ion-skeleton-text :animated="true" /></div>
       <section v-else-if="isError" class="state-card"><h2> {{ t('Не получилось открыть данные') }} </h2><p> {{ t('Проверьте соединение и попробуйте ещё раз.') }} </p><ion-button @click="refetch()"> {{ t('Повторить') }} </ion-button></section>
-      <section v-else-if="!pets?.length" class="state-card home-empty"><img src="/assets/senya-peek.png" :alt="t('Кот Сеня выглядывает')" /><h1> {{ t('Добавьте первого питомца') }} </h1><p> {{ t('Достаточно имени и вида. Остальное можно заполнить позже.') }} </p><ion-button router-link="/pets/new"><ion-icon slot="start" :icon="addOutline" /> {{ t('Добавить первого питомца') }} </ion-button></section>
+      <section v-else-if="!pets?.length" class="state-card home-empty"><img :src="`${baseUrl}assets/senya-peek.png`" :alt="t('Кот Сеня выглядывает')" /><h1> {{ t('Добавьте первого питомца') }} </h1><p> {{ t('Достаточно имени и вида. Остальное можно заполнить позже.') }} </p><ion-button router-link="/pets/new"><ion-icon slot="start" :icon="addOutline" /> {{ t('Добавить первого питомца') }} </ion-button></section>
       <template v-else>
         <pet-carousel :pets="pets" />
         <section class="calendar-section" aria-labelledby="calendar-title">
@@ -26,6 +26,7 @@
   </ion-page>
 </template>
 <script setup lang="ts">
+const baseUrl = import.meta.env.BASE_URL
 import { t, intlLocale } from '@/i18n'
 import { computed, ref } from 'vue'
 import { IonAvatar, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonPage, IonSkeletonText, IonTitle, IonToolbar } from '@ionic/vue'

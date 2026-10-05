@@ -23,7 +23,7 @@ const seedPets: PetSummary[] = [
 ]
 
 export function isDemoAvailable() {
-  return import.meta.env.DEV
+  return import.meta.env.DEV || import.meta.env.MODE === 'pages'
 }
 
 export function isDemoMode() {
