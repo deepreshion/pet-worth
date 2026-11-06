@@ -1,12 +1,12 @@
 name: CI
-
 on:
   pull_request:
   push:
     branches: [main]
-
+permissions:
+  contents: read
 jobs:
-  web:
+  client:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,9 +20,8 @@ jobs:
       - run: npm test
       - run: npm run build
         env:
-          VITE_SUPABASE_URL: http://127.0.0.1:54321
-          VITE_SUPABASE_PUBLISHABLE_KEY: ci-placeholder-key
-
+          EXPO_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+          EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ci-placeholder-key
   database:
     runs-on: ubuntu-latest
     steps:
@@ -33,20 +32,42 @@ jobs:
       - run: supabase start
       - run: supabase db reset
       - run: supabase test db
-
-  ios-simulator:
-    runs-on: macos-15
-    needs: web
+  android:
+    runs-on: ubuntu-latest
+    needs: client
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
       - run: npm ci
-      - run: npm run build
-        env:
-          VITE_SUPABASE_URL: http://127.0.0.1:54321
-          VITE_SUPABASE_PUBLISHABLE_KEY: ci-placeholder-key
-      - run: npx cap sync ios
-      - run: xcodebuild -project ios/App/App.xcodeproj -scheme App -sdk iphonesimulator -configuration Debug CODE_SIGNING_ALLOWED=NO build
+      - run: npm run native:generate -- --platform android
+      - run: ./gradlew assembleDebug --no-daemon
+        working-directory: android
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-debug
+          path: android/app/build/outputs/apk/debug/*.apk
+  ios:
+    runs-on: macos-latest
+    needs: client
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - run: npm ci
+      - run: npm run native:generate -- --platform ios
+      - run: pod install
+        working-directory: ios
+      - run: xcodebuild -workspace ios/PetWorth.xcworkspace -scheme PetWorth -sdk iphonesimulator -configuration Debug CODE_SIGNING_ALLOWED=NO build

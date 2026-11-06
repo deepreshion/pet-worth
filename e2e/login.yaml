@@ -1,0 +1,14 @@
+appId: app.petworth.mobile
+---
+- launchApp:
+    clearState: true
+- tapOn:
+    id: skip-onboarding
+- tapOn: English
+- tapOn:
+    id: email-input
+- inputText: ${E2E_EMAIL}
+- hideKeyboard
+- tapOn:
+    id: send-otp
+- assertVisible: Enter the 6-digit code from the email

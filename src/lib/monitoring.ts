@@ -1,56 +1,36 @@
-import type { App } from 'vue'
-import type { Router } from 'vue-router'
-import * as Sentry from '@sentry/vue'
-
-const allowedEvents = new Set(['sign_in_completed', 'pet_created', 'pet_profile_opened'])
-
-function withoutQuery(value?: string) {
-  if (!value) return value
-  try {
-    const url = new URL(value, window.location.origin)
-    return `${url.origin}${url.pathname}`
-  } catch {
-    return value.split('?')[0].split('#')[0]
-  }
-}
-
-export function initializeMonitoring(app: App, router: Router) {
-  const dsn = import.meta.env.VITE_SENTRY_DSN
-  if (!dsn) return
-
+import * as Sentry from "@sentry/react-native";
+export function initializeMonitoring() {
+  if (!process.env.EXPO_PUBLIC_SENTRY_DSN) return;
   Sentry.init({
-    app,
-    dsn,
-    environment: import.meta.env.VITE_APP_ENV ?? 'local',
-    integrations: [Sentry.browserTracingIntegration({ router })],
+    dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
+    sendDefaultPii: false,
+    tracesSampleRate: 0,
     beforeSend(event) {
-      delete event.user
-      if (event.request) {
-        delete event.request.data
-        delete event.request.cookies
-        event.request.url = withoutQuery(event.request.url)
+      // Only keep technical frames and error kinds; native SDK payloads can contain URLs and user input.
+      delete event.user;
+      delete event.request;
+      delete event.extra;
+      delete event.contexts;
+      delete event.breadcrumbs;
+      delete event.message;
+      for (const exception of event.exception?.values ?? []) {
+        exception.value = "redacted";
+        for (const frame of exception.stacktrace?.frames ?? []) {
+          delete frame.vars;
+          if (frame.filename) frame.filename = frame.filename.split(/[?#]/)[0];
+        }
       }
-      return event
+      return event;
     },
-    beforeSendTransaction(event) {
-      if (event.request) event.request.url = withoutQuery(event.request.url)
-      return event
-    },
-    beforeBreadcrumb(breadcrumb) {
-      delete breadcrumb.data
-      return breadcrumb
-    },
-  })
+    beforeBreadcrumb: () => null,
+  });
 }
-
 export function captureTechnicalError(error: unknown, context: string) {
   Sentry.withScope((scope) => {
-    scope.setTag('context', context)
-    Sentry.captureException(error)
-  })
+    scope.setTag("context", context);
+    Sentry.captureException(error);
+  });
 }
-
-export function trackProductEvent(name: 'sign_in_completed' | 'pet_created' | 'pet_profile_opened') {
-  if (!allowedEvents.has(name)) return
-  Sentry.addBreadcrumb({ category: 'product', message: name, level: 'info' })
+export function trackProductEvent(_name: string) {
+  /* No user content or product payloads in crash reports. */
 }

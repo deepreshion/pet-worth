@@ -1,0 +1,23 @@
+appId: app.petworth.mobile
+---
+- extendedWaitUntil:
+    visible: Add a pet
+    timeout: 30000
+- tapOn: Add a pet
+- tapOn: Pet name
+- inputText: ${E2E_PET}
+- hideKeyboard
+- tapOn: Next
+- tapOn: Next
+- tapOn: Add a pet
+- assertVisible: ${E2E_PET}
+- tapOn: Edit pet
+- tapOn: Name *
+- eraseText: 100
+- inputText: ${E2E_PET} II
+- hideKeyboard
+- tapOn: Save
+- assertVisible: ${E2E_PET} II
+- stopApp
+- launchApp
+- assertVisible: Hello!

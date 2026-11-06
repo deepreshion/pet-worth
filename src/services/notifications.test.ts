@@ -1,52 +1,154 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-
-const mocks = vi.hoisted(() => ({
-  checkPermissions: vi.fn(), getPending: vi.fn(), cancel: vi.fn(), schedule: vi.fn(), addListener: vi.fn(),
-  getSession: vi.fn(), gt: vi.fn(),
-}))
-vi.mock('@capacitor/core', () => ({ Capacitor: { isNativePlatform: () => true } }))
-vi.mock('@capacitor/local-notifications', () => ({ LocalNotifications: {
-  checkPermissions: mocks.checkPermissions, getPending: mocks.getPending, cancel: mocks.cancel, schedule: mocks.schedule,
-  addListener: mocks.addListener, requestPermissions: vi.fn(),
-} }))
-vi.mock('@/lib/supabase', () => ({ supabase: {
-  auth: { getSession: mocks.getSession },
-  from: () => ({ select: () => ({ gt: mocks.gt }) }),
-} }))
-
-import { setLocale } from '@/i18n'
-import { syncMedicalNotifications } from './notifications'
-
-describe('notification reconciliation', () => {
-  beforeEach(() => {
-    localStorage.clear()
-    mocks.checkPermissions.mockReset().mockResolvedValue({ display: 'granted' })
-    mocks.getSession.mockReset().mockResolvedValue({ data: { session: { user: { id: 'user' } } } })
-    mocks.getPending.mockReset().mockResolvedValue({ notifications: [
-      { id: 11, extra: { source: 'pet-worth-medical', eventId: 'old' } },
-      { id: 22, extra: { source: 'pet-worth-medical', eventId: 'event' } },
-      { id: 99, extra: { source: 'another-app' } },
-    ] })
-    mocks.gt.mockReset().mockResolvedValue({ data: [{ scheduled_at: '2099-01-01T09:00:00Z', notification_id: 22, medical_events: { id: 'event', title: 'Врач', pets: { name: 'Сеня' } } }], error: null })
-    mocks.cancel.mockReset().mockResolvedValue(undefined)
-    mocks.schedule.mockReset().mockResolvedValue(undefined)
-  })
-
-  it('replaces reminder text in the selected language while retaining user titles and pet names', async () => {
-    await setLocale('en')
-    await syncMedicalNotifications()
-    expect(mocks.schedule).toHaveBeenCalledWith({ notifications: [expect.objectContaining({ title: 'Tomorrow: Врач', body: 'Сеня' })] })
-    await setLocale('ru')
-    await syncMedicalNotifications()
-    expect(mocks.schedule).toHaveBeenLastCalledWith({ notifications: [expect.objectContaining({ title: 'Завтра: Врач', body: 'Сеня' })] })
-  })
-
-  it('cancels stale app-owned ids and replaces current schedules from database', async () => {
-    localStorage.setItem('pet-worth-medical-notification-ids', JSON.stringify([11, 22]))
-    await syncMedicalNotifications()
-    expect(mocks.cancel).toHaveBeenNthCalledWith(1, { notifications: [{ id: 11 }] })
-    expect(mocks.cancel).toHaveBeenNthCalledWith(2, { notifications: [{ id: 22 }] })
-    expect(mocks.schedule).toHaveBeenCalledWith({ notifications: [expect.objectContaining({ id: 22, extra: { source: 'pet-worth-medical', eventId: 'event' } })] })
-    expect(localStorage.getItem('pet-worth-medical-notification-ids')).toBe('[22]')
-  })
-})
+import * as N from "expo-notifications";
+import { Platform } from "react-native";
+import { supabase } from "@/lib/supabase";
+import {
+  clearMedicalNotifications,
+  eventFromNotification,
+  scheduleEventNotification,
+  syncMedicalNotifications,
+} from "./notifications";
+jest.mock("@/lib/supabase", () => ({
+  supabase: { auth: { getSession: jest.fn() }, from: jest.fn() },
+}));
+jest.mock("expo-notifications", () => ({
+  IosAuthorizationStatus: { PROVISIONAL: 3 },
+  AndroidImportance: { HIGH: 4 },
+  SchedulableTriggerInputTypes: { DATE: "date" },
+  setNotificationHandler: jest.fn(),
+  getPermissionsAsync: jest.fn(),
+  requestPermissionsAsync: jest.fn(),
+  getExactAlarmPermissionsAsync: jest.fn(),
+  requestExactAlarmPermissionsAsync: jest.fn(),
+  setNotificationChannelAsync: jest.fn(),
+  getAllScheduledNotificationsAsync: jest.fn(),
+  cancelScheduledNotificationAsync: jest.fn(),
+  scheduleNotificationAsync: jest.fn(),
+}));
+const api = supabase as unknown as {
+  auth: { getSession: jest.Mock };
+  from: jest.Mock;
+};
+const granted = N.getPermissionsAsync as jest.Mock;
+const pending = N.getAllScheduledNotificationsAsync as jest.Mock;
+const schedule = N.scheduleNotificationAsync as jest.Mock;
+const cancel = N.cancelScheduledNotificationAsync as jest.Mock;
+const eventId = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
+const row = {
+  event_id: eventId,
+  notification_id: 42,
+  scheduled_at: "2099-01-01T10:00:00Z",
+};
+function rows(items: unknown[]) {
+  api.from.mockReturnValue({
+    select: () => ({
+      gt: () => ({
+        order: () => ({
+          order: () => ({ range: async () => ({ data: items, error: null }) }),
+        }),
+      }),
+    }),
+  });
+}
+beforeEach(() => {
+  jest.clearAllMocks();
+  Object.defineProperty(Platform, "OS", { value: "ios", configurable: true });
+  granted.mockResolvedValue({ granted: true });
+  pending.mockResolvedValue([]);
+  schedule.mockResolvedValue("ok");
+  api.auth.getSession.mockResolvedValue({
+    data: { session: { user: { id: "u" } } },
+  });
+  rows([row]);
+});
+it("does not prompt during passive reconciliation", async () => {
+  granted.mockResolvedValue({ granted: false, canAskAgain: true });
+  expect(await syncMedicalNotifications()).toMatchObject({ failed: true });
+  expect(N.requestPermissionsAsync).not.toHaveBeenCalled();
+  expect(schedule).not.toHaveBeenCalled();
+});
+it("replaces owned requests while preserving unrelated notifications", async () => {
+  pending.mockResolvedValue([
+    { identifier: "old", content: { data: { source: "pet-worth-medical" } } },
+    { identifier: "other", content: { data: { source: "other" } } },
+  ]);
+  await syncMedicalNotifications();
+  expect(cancel).toHaveBeenCalledWith("old");
+  expect(cancel).not.toHaveBeenCalledWith("other");
+  expect(schedule).toHaveBeenCalledWith(
+    expect.objectContaining({
+      identifier: "pet-worth-42",
+      content: expect.objectContaining({
+        data: { source: "pet-worth-medical", eventId },
+      }),
+    }),
+  );
+});
+it("limits iOS requests and reports omitted reminders", async () => {
+  rows(
+    Array.from({ length: 70 }, (_, i) => ({
+      ...row,
+      event_id: `event-${i}`,
+      notification_id: i + 1,
+    })),
+  );
+  const result = await syncMedicalNotifications();
+  expect(schedule).toHaveBeenCalledTimes(64);
+  expect(result.omitted).toBe(6);
+});
+it("reports native scheduling failure without claiming success", async () => {
+  schedule.mockRejectedValue(new Error("permission"));
+  expect(await syncMedicalNotifications()).toMatchObject({ failed: true });
+});
+it("requires exact-alarm permission on Android when enabling reminders", async () => {
+  Object.defineProperty(Platform, "OS", {
+    value: "android",
+    configurable: true,
+  });
+  (N.getExactAlarmPermissionsAsync as jest.Mock).mockResolvedValue({
+    granted: false,
+    canAskAgain: true,
+  });
+  (N.requestExactAlarmPermissionsAsync as jest.Mock).mockResolvedValue({
+    granted: false,
+  });
+  expect(
+    await scheduleEventNotification({
+      id: 42,
+      eventId,
+      petName: "private",
+      title: "private",
+      at: new Date(row.scheduled_at),
+    }),
+  ).toEqual({ scheduled: false, denied: true });
+  expect(N.requestExactAlarmPermissionsAsync).toHaveBeenCalledTimes(1);
+  expect(schedule).not.toHaveBeenCalled();
+});
+it("clears only application requests at logout", async () => {
+  pending.mockResolvedValue([
+    {
+      identifier: "pet-worth-42",
+      content: { data: { source: "pet-worth-medical" } },
+    },
+  ]);
+  await clearMedicalNotifications();
+  expect(cancel).toHaveBeenCalledWith("pet-worth-42");
+});
+it("rejects unrelated or malformed notification navigation", () => {
+  expect(eventFromNotification(null)).toBeNull();
+  expect(
+    eventFromNotification({
+      notification: {
+        request: { content: { data: { source: "other", eventId } } },
+      },
+    } as unknown as N.NotificationResponse),
+  ).toBeNull();
+  expect(
+    eventFromNotification({
+      notification: {
+        request: {
+          content: { data: { source: "pet-worth-medical", eventId } },
+        },
+      },
+    } as unknown as N.NotificationResponse),
+  ).toBe(eventId);
+});

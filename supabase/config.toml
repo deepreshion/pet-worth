@@ -31,7 +31,19 @@ enable_signup = true
 [auth.email]
 enable_signup = true
 double_confirm_changes = true
-enable_confirmations = false
+enable_confirmations = true
+# Match the hosted project's current Email OTP length and expiry.
+otp_length = 6
+otp_expiry = 3600
+max_frequency = "1m"
+
+[auth.email.template.magic_link]
+subject = "Pet Worth — код для входа / sign-in code"
+content_path = "./supabase/templates/email-otp.html"
+
+[auth.email.template.confirmation]
+subject = "Pet Worth — код для входа / sign-in code"
+content_path = "./supabase/templates/email-otp.html"
 
 [storage]
 enabled = true

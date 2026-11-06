@@ -1,38 +1,20 @@
-import eslint from '@eslint/js'
-import vue from 'eslint-plugin-vue'
-import tseslint from 'typescript-eslint'
+const { defineConfig } = require("eslint/config");
+const expo = require("eslint-config-expo/flat");
+module.exports = defineConfig([
+  expo,
+  {
+    files: ["**/*.test.ts", "**/*.test.tsx", "tests/**/*.ts"],
+    rules: { "@typescript-eslint/no-require-imports": "off" },
+  },
 
-export default tseslint.config(
-  { ignores: ['dist/**', 'dist-pages/**', 'ios/**', 'node_modules/**'] },
-  eslint.configs.recommended,
-  ...tseslint.configs.recommended,
-  ...vue.configs['flat/recommended'],
   {
-    languageOptions: {
-      globals: {
-        console: 'readonly',
-        crypto: 'readonly',
-        Event: 'readonly',
-        File: 'readonly',
-        HTMLInputElement: 'readonly',
-        URL: 'readonly',
-        window: 'readonly',
-      },
-    },
-    rules: {
-      'vue/html-self-closing': 'off',
-      'vue/max-attributes-per-line': 'off',
-      'vue/no-deprecated-slot-attribute': 'off',
-      'vue/singleline-html-element-content-newline': 'off',
-    },
+    ignores: [
+      "node_modules/**",
+      "dist/**",
+      "dist-pages/**",
+      ".expo/**",
+      "ios/**",
+      "android/**",
+    ],
   },
-  {
-    files: ['**/*.vue'],
-    languageOptions: {
-      parserOptions: { parser: tseslint.parser },
-    },
-    rules: {
-      'vue/multi-word-component-names': 'off',
-    },
-  },
-)
+]);

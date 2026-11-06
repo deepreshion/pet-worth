@@ -1,39 +1,23 @@
-import { Preferences } from '@capacitor/preferences'
-import { Capacitor } from '@capacitor/core'
-import { createClient, type SupportedStorage } from '@supabase/supabase-js'
-import type { Database } from '@/types/database'
-
-const url = import.meta.env.VITE_SUPABASE_URL
-const publishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
-
-if (!url || !publishableKey || publishableKey.startsWith('replace-')) {
-  console.warn(
-    'Supabase is not configured. Copy .env.example to .env and add the project URL and publishable key.',
-  )
-}
-
-const nativeStorage: SupportedStorage = {
-  async getItem(key) {
-    return (await Preferences.get({ key })).value
-  },
-  async setItem(key, value) {
-    await Preferences.set({ key, value })
-  },
-  async removeItem(key) {
-    await Preferences.remove({ key })
-  },
-}
-
+import "react-native-url-polyfill/auto";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createClient, processLock } from "@supabase/supabase-js";
+import type { Database } from "@/types/database";
+export const configured = Boolean(
+  process.env.EXPO_PUBLIC_SUPABASE_URL &&
+  process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+);
 export const supabase = createClient<Database>(
-  url || 'http://127.0.0.1:54321',
-  publishableKey || 'missing-local-publishable-key',
+  process.env.EXPO_PUBLIC_SUPABASE_URL || "http://127.0.0.1:54321",
+  process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    "missing-local-publishable-key",
   {
     auth: {
-      flowType: 'pkce',
-      detectSessionInUrl: false,
-      persistSession: true,
+      storage: AsyncStorage,
       autoRefreshToken: true,
-      storage: Capacitor.isNativePlatform() ? nativeStorage : window.localStorage,
+      persistSession: true,
+      detectSessionInUrl: false,
+      flowType: "pkce",
+      lock: processLock,
     },
   },
-)
+);

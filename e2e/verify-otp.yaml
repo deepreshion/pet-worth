@@ -1,0 +1,10 @@
+appId: app.petworth.mobile
+---
+- tapOn:
+    id: otp-input
+- inputText: ${E2E_OTP}
+- tapOn:
+    id: verify-otp
+- extendedWaitUntil:
+    visible: Hello!
+    timeout: 30000

@@ -1,73 +1,180 @@
-import { t } from '@/i18n'
-import { Capacitor } from '@capacitor/core'
-import { LocalNotifications, type PendingLocalNotificationSchema } from '@capacitor/local-notifications'
-import type { Router } from 'vue-router'
-import { supabase } from '@/lib/supabase'
-
-const registryKey = 'pet-worth-medical-notification-ids'
-
-function readRegistry() {
-  try { return JSON.parse(window.localStorage.getItem(registryKey) ?? '[]') as number[] } catch { return [] }
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Notifications from "expo-notifications";
+import { IosAuthorizationStatus, AndroidImportance } from "expo-notifications";
+import { Platform } from "react-native";
+import { supabase } from "@/lib/supabase";
+import { notificationQueue } from "@/utils/notificationQueue";
+import { t } from "@/i18n";
+const source = "pet-worth-medical";
+const registryKey = "pet-worth-notifications-v2";
+const identifier = (id: number) => `pet-worth-${id}`;
+let chain: Promise<unknown> = Promise.resolve();
+function serial<T>(work: () => Promise<T>): Promise<T> {
+  const next = chain.then(work, work);
+  chain = next.catch(() => undefined);
+  return next;
 }
-function writeRegistry(ids: number[]) { window.localStorage.setItem(registryKey, JSON.stringify(ids)) }
-
-export async function initializeNotificationNavigation(router: Router) {
-  if (!Capacitor.isNativePlatform()) return
-  await LocalNotifications.addListener('localNotificationActionPerformed', ({ notification }) => {
-    const eventId = notification.extra?.eventId
-    if (notification.extra?.source === 'pet-worth-medical' && typeof eventId === 'string') void router.push(`/medical-events/${eventId}`)
-  })
-}
-
-export async function scheduleEventNotification(input: { id: number; eventId: string; petName: string; title: string; at: Date }) {
-  if (!Capacitor.isNativePlatform()) return { scheduled: false, denied: true }
-  let permission = await LocalNotifications.checkPermissions()
-  if (permission.display === 'prompt' || permission.display === 'prompt-with-rationale') permission = await LocalNotifications.requestPermissions()
-  if (permission.display !== 'granted') return { scheduled: false, denied: true }
-  await LocalNotifications.cancel({ notifications: [{ id: input.id }] })
-  await LocalNotifications.schedule({ notifications: [{ id: input.id, title: t('Завтра: {title}', { title: input.title }), body: input.petName,
-    schedule: { at: input.at, allowWhileIdle: true }, extra: { source: 'pet-worth-medical', eventId: input.eventId } }] })
-  writeRegistry([...new Set([...readRegistry(), input.id])])
-  return { scheduled: true, denied: false }
-}
-
-export async function cancelEventNotification(id: number) {
-  if (!Capacitor.isNativePlatform()) return
-  await LocalNotifications.cancel({ notifications: [{ id }] })
-  writeRegistry(readRegistry().filter((item) => item !== id))
-}
-
-interface ReminderSyncRow {
-  scheduled_at: string
-  notification_id: number
-  medical_events: { id: string; title: string; pets: { name: string } | null } | null
-}
-
-export async function syncMedicalNotifications() {
-  if (!Capacitor.isNativePlatform()) return
-  const permission = await LocalNotifications.checkPermissions()
-  const { data: sessionData } = await supabase.auth.getSession()
-  let desired: ReminderSyncRow[] = []
-  if (sessionData.session) {
-    const { data, error } = await supabase.from('reminders').select('scheduled_at, notification_id, medical_events(id, title, pets(name))').gt('scheduled_at', new Date().toISOString())
-    if (error) throw error
-    desired = (data ?? []) as unknown as ReminderSyncRow[]
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
+async function allowed(request: boolean) {
+  let permission = await Notifications.getPermissionsAsync();
+  if (!permission.granted && request && permission.canAskAgain)
+    permission = await Notifications.requestPermissionsAsync();
+  const notificationsAllowed =
+    permission.granted ||
+    permission.ios?.status === IosAuthorizationStatus.PROVISIONAL;
+  if (!notificationsAllowed) return false;
+  if (Platform.OS === "android") {
+    let exact = await Notifications.getExactAlarmPermissionsAsync();
+    if (!exact.granted && request && exact.canAskAgain)
+      exact = await Notifications.requestExactAlarmPermissionsAsync();
+    return exact.granted;
   }
-  const desiredIds = new Set(desired.map((item) => item.notification_id))
-  const pending = await LocalNotifications.getPending()
-  const appOwnedPending = pending.notifications.filter((item) => item.extra?.source === 'pet-worth-medical').map((item) => item.id)
-  const staleIds = [...new Set([...readRegistry(), ...appOwnedPending])].filter((id) => !desiredIds.has(id))
-  if (staleIds.length) await LocalNotifications.cancel({ notifications: staleIds.map((id) => ({ id })) })
-  if (permission.display !== 'granted') { writeRegistry([]); return }
-  const toReplace = pending.notifications.filter((item) => desiredIds.has(item.id)).map((item) => item.id)
-  if (toReplace.length) await LocalNotifications.cancel({ notifications: toReplace.map((id) => ({ id })) })
-  const notifications: PendingLocalNotificationSchema[] = desired.map((item) => ({
-    id: item.notification_id,
-    title: t('Завтра: {title}', { title: item.medical_events?.title ?? t('Событие') }),
-    body: item.medical_events?.pets?.name ?? t('Питомец'),
-    schedule: { at: new Date(item.scheduled_at), allowWhileIdle: true },
-    extra: { source: 'pet-worth-medical', eventId: item.medical_events?.id },
-  }))
-  if (notifications.length) await LocalNotifications.schedule({ notifications })
-  writeRegistry([...desiredIds])
+  return true;
+}
+async function channel() {
+  if (Platform.OS === "android")
+    await Notifications.setNotificationChannelAsync("medical-reminders", {
+      name: t("Напоминания"),
+      importance: AndroidImportance.HIGH,
+    });
+}
+async function schedule(input: { id: number; eventId: string; at: Date }) {
+  await Notifications.scheduleNotificationAsync({
+    identifier: identifier(input.id),
+    content: {
+      title: t("Напоминания"),
+      body: t("Открыть событие"),
+      data: { source, eventId: input.eventId },
+      sound: "default",
+    },
+    trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.DATE,
+      date: input.at,
+      channelId: "medical-reminders",
+    },
+  });
+}
+export function scheduleEventNotification(input: {
+  id: number;
+  eventId: string;
+  petName: string;
+  title: string;
+  at: Date;
+}) {
+  return serial(async () => {
+    if (!(await allowed(true))) return { scheduled: false, denied: true };
+    await channel();
+    // Reconcile the entire queue so the nearest events win when iOS reaches its limit.
+    const result = await reconcile();
+    const pending = await Notifications.getAllScheduledNotificationsAsync();
+    return {
+      scheduled: pending.some((n) => n.identifier === identifier(input.id)),
+      denied:
+        result.failed ||
+        !pending.some((n) => n.identifier === identifier(input.id)),
+    };
+  });
+}
+export function cancelEventNotification(id: number) {
+  return serial(async () => {
+    await Notifications.cancelScheduledNotificationAsync(identifier(id));
+  });
+}
+export function clearMedicalNotifications() {
+  return serial(async () => {
+    const pending = await Notifications.getAllScheduledNotificationsAsync();
+    const saved = JSON.parse(
+      (await AsyncStorage.getItem(registryKey)) ?? "[]",
+    ) as string[];
+    const ids = new Set([
+      ...saved,
+      ...pending
+        .filter((n) => n.content.data?.source === source)
+        .map((n) => n.identifier),
+    ]);
+    for (const id of ids)
+      await Notifications.cancelScheduledNotificationAsync(id);
+    await AsyncStorage.removeItem(registryKey);
+  });
+}
+async function reconcile() {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const rows: {
+    event_id: string;
+    scheduled_at: string;
+    notification_id: number;
+  }[] = [];
+  if (session) {
+    for (let page = 0; ; page++) {
+      const { data, error } = await supabase
+        .from("reminders")
+        .select("event_id,scheduled_at,notification_id")
+        .gt("scheduled_at", new Date().toISOString())
+        .order("scheduled_at")
+        .order("id")
+        .range(page * 500, page * 500 + 499);
+      if (error) throw error;
+      rows.push(...data);
+      if (data.length < 500) break;
+    }
+  }
+  const pending = await Notifications.getAllScheduledNotificationsAsync();
+  const owned = pending.filter((n) => n.content.data?.source === source);
+  const capacity =
+    Platform.OS === "ios"
+      ? Math.max(0, 64 - (pending.length - owned.length))
+      : 500;
+  const queue = notificationQueue(
+    rows.map((r) => ({
+      eventId: r.event_id,
+      id: r.notification_id,
+      at: new Date(r.scheduled_at),
+    })),
+    capacity,
+  );
+  if (!(await allowed(false))) {
+    for (const n of owned)
+      await Notifications.cancelScheduledNotificationAsync(n.identifier);
+    await AsyncStorage.removeItem(registryKey);
+    return { failed: rows.length > 0, omitted: queue.omitted };
+  }
+  await channel();
+  for (const n of owned)
+    await Notifications.cancelScheduledNotificationAsync(n.identifier);
+  const scheduled: string[] = [];
+  let failed = false;
+  for (const item of queue.selected) {
+    try {
+      await schedule(item);
+      scheduled.push(identifier(item.id));
+    } catch {
+      failed = true;
+    }
+  }
+  await AsyncStorage.setItem(registryKey, JSON.stringify(scheduled));
+  return { failed, omitted: queue.omitted };
+}
+export function syncMedicalNotifications() {
+  return serial(reconcile);
+}
+export function eventFromNotification(
+  response: Notifications.NotificationResponse | null,
+) {
+  const data = response?.notification.request.content.data;
+  return data?.source === source &&
+    typeof data.eventId === "string" &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      data.eventId,
+    )
+    ? data.eventId
+    : null;
 }

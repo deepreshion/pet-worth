@@ -1,5 +1,5 @@
 begin;
-select plan(53);
+select plan(55);
 
 insert into auth.users (id, instance_id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at) values
   ('11111111-1111-4111-8111-111111111111', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'one@example.test', '', now(), '{"provider":"email","providers":["email"]}', '{}', now(), now()),
@@ -22,6 +22,11 @@ select is((select count(*)::int from public.weight_records), 2, 'changed weight 
 select throws_ok($$update public.pets set family_id = '00000000-0000-4000-8000-000000000000' where true$$, '42501', 'permission denied for table pets', 'service pet fields are protected');
 select lives_ok($$insert into storage.objects (bucket_id, name) select 'pet-photos', family_id::text || '/' || id::text || '/photo.jpg' from public.pets limit 1$$, 'editor uploads pet photo');
 select is((select count(*)::int from storage.objects where bucket_id = 'pet-photos'), 1, 'editor reads pet photo');
+
+select throws_ok(
+  $$insert into storage.objects (bucket_id, name) select 'pet-photos', family_id::text || '/00000000-0000-4000-8000-000000000000/missing.jpg' from public.pets limit 1$$,
+  '42501', 'new row violates row-level security policy for table "objects"', 'photo upload requires an existing pet in the family'
+);
 
 select lives_ok(
   $$insert into storage.objects (bucket_id, name) select 'medical-attachments', family_id::text || '/eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee/dddddddd-dddd-4ddd-8ddd-dddddddddddd/document.pdf' from public.pets limit 1$$,
@@ -114,6 +119,12 @@ select throws_ok($$select * from public.delete_medical_event('eeeeeeee-eeee-4eee
 select throws_ok(
   $$insert into storage.objects (bucket_id, name) select 'medical-attachments', family_id::text || '/eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee/cccccccc-cccc-4ccc-8ccc-cccccccccccc/viewer.pdf' from public.pets limit 1$$,
   '42501', 'new row violates row-level security policy for table "objects"', 'viewer cannot upload object'
+);
+
+
+select throws_ok(
+  $$insert into storage.objects (bucket_id, name) select 'pet-photos', family_id::text || '/' || id::text || '/viewer.jpg' from public.pets limit 1$$,
+  '42501', 'new row violates row-level security policy for table "objects"', 'viewer cannot upload pet photo'
 );
 
 select set_config('request.jwt.claims', '{"sub":"11111111-1111-4111-8111-111111111111","role":"authenticated"}', true);

@@ -15,3 +15,11 @@ ios/App/App.xcodeproj/xcuserdata/
 supabase/.branches/
 supabase/.temp/
 /.agents/
+
+.expo/
+/ios/
+/android/
+expo-env.d.ts
+/e2e/.artifacts/
+
+/artifacts/ios-qa/

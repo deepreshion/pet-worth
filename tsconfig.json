@@ -1,22 +1,28 @@
 {
+  "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "target": "ES2022",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
     "strict": true,
-    "skipLibCheck": true,
-    "jsx": "preserve",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": ["vite/client", "vitest/globals", "node"],
+    "noEmit": true,
     "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "paths": { "@/*": ["src/*"] },
+    "types": ["jest", "node"],
+    "ignoreDeprecations": "6.0"
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": [
+    "app/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "app.config.ts",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ],
+  "exclude": [
+    "src/pages",
+    "src/composables",
+    "src/stores",
+    "src/router",
+    "src/main.ts",
+    "src/env.d.ts",
+    "src/test"
+  ]
 }

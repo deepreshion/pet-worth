@@ -1,29 +1,61 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { uploadPetPhoto } from "./pets";
+jest.mock("@/platform/files", () => ({
+  readUpload: jest.fn(async () => new ArrayBuffer(3)),
+}));
 
-const mocks = vi.hoisted(() => ({ upload: vi.fn(), remove: vi.fn(), rpc: vi.fn() }))
-vi.mock('@/lib/demo', () => ({ isDemoMode: () => false, listDemoPets: vi.fn(), saveDemoPets: vi.fn(), fileToDataUrl: vi.fn() }))
-vi.mock('@/lib/supabase', () => ({
+const mockServices = { upload: jest.fn(), remove: jest.fn(), rpc: jest.fn() };
+jest.mock("@/lib/supabase", () => ({
   supabase: {
-    storage: { from: () => ({ upload: mocks.upload, remove: mocks.remove }) },
-    rpc: mocks.rpc,
+    storage: {
+      from: () => ({
+        upload: mockServices.upload,
+        remove: mockServices.remove,
+      }),
+    },
+    rpc: (...args: unknown[]) => mockServices.rpc(...args),
   },
-}))
-import { uploadPetPhoto } from './pets'
+}));
 
-describe('photo replacement', () => {
-  beforeEach(() => { mocks.upload.mockReset().mockResolvedValue({ error: null }); mocks.remove.mockReset().mockResolvedValue({ error: null }); mocks.rpc.mockReset() })
+describe("photo replacement", () => {
+  beforeEach(() => {
+    mockServices.upload.mockReset().mockResolvedValue({ error: null });
+    mockServices.remove.mockReset().mockResolvedValue({ error: null });
+    mockServices.rpc.mockReset();
+  });
 
-  it('removes the new object when database update fails', async () => {
-    mocks.rpc.mockResolvedValue({ data: null, error: new Error('db failed') })
-    await expect(uploadPetPhoto('pet-id', 'family-id', new File(['x'], 'pet.jpg', { type: 'image/jpeg' }))).rejects.toThrow('db failed')
-    expect(mocks.remove).toHaveBeenCalledTimes(1)
-    expect(mocks.remove.mock.calls[0][0][0]).toMatch(/^family-id\/pet-id\//)
-  })
+  it("removes the new object when database update fails", async () => {
+    mockServices.rpc.mockResolvedValue({
+      data: null,
+      error: new Error("db failed"),
+    });
+    await expect(
+      uploadPetPhoto("pet-id", "family-id", {
+        uri: "file:///pet.jpg",
+        name: "pet.jpg",
+        mimeType: "image/jpeg",
+        size: 1,
+      }),
+    ).rejects.toThrow("db failed");
+    expect(mockServices.remove).toHaveBeenCalledTimes(1);
+    expect(mockServices.remove.mock.calls[0][0][0]).toMatch(
+      /^family-id\/pet-id\//,
+    );
+  });
 
-  it('deletes the old object only after the new path is stored', async () => {
-    mocks.rpc.mockResolvedValue({ data: 'family-id/pet-id/old.jpg', error: null })
-    await uploadPetPhoto('pet-id', 'family-id', new File(['x'], 'pet.jpg', { type: 'image/jpeg' }))
-    expect(mocks.rpc).toHaveBeenCalledOnce()
-    expect(mocks.remove).toHaveBeenLastCalledWith(['family-id/pet-id/old.jpg'])
-  })
-})
+  it("deletes the old object only after the new path is stored", async () => {
+    mockServices.rpc.mockResolvedValue({
+      data: "family-id/pet-id/old.jpg",
+      error: null,
+    });
+    await uploadPetPhoto("pet-id", "family-id", {
+      uri: "file:///pet.jpg",
+      name: "pet.jpg",
+      mimeType: "image/jpeg",
+      size: 1,
+    });
+    expect(mockServices.rpc).toHaveBeenCalledTimes(1);
+    expect(mockServices.remove).toHaveBeenLastCalledWith([
+      "family-id/pet-id/old.jpg",
+    ]);
+  });
+});

@@ -1,98 +1,19 @@
-# Pet Worth
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/loader/cat-inline-dark.webp">
+    <source media="(prefers-color-scheme: light)" srcset="assets/loader/cat-inline.webp">
+    <img src="assets/loader/cat-inline.webp" width="180" alt="Шагающий кот Pet Worth">
+  </picture>
+  <h1>Pet Worth</h1>
+</div>
 
-Два готовых вертикальных среза мобильного приложения: вход по magic link и профили питомцев, а также медицинская история с фото/PDF, общим календарём и локальными напоминаниями за 24 часа. Клиент построен на Ionic Vue и Capacitor, данные и приватные файлы хранятся в Supabase.
+Pet Worth — мобильное приложение для заботы о питомцах. Профили, медицинская история, фотографии и PDF-документы, календарь и напоминания помогают держать важное под рукой и вовремя возвращаться к заботе о здоровье.
 
-## Локальный запуск
+<p align="center">
+  <a href="https://t.me/deepreshion"><img src="https://img.shields.io/badge/Telegram-deepreshion-2AABEE?style=for-the-badge&amp;logo=telegram&amp;logoColor=white" alt="Telegram: @deepreshion"></a>
+  <a href="mailto:deepreshion@gmail.com"><img src="https://img.shields.io/badge/Email-deepreshion%40gmail.com-64748B?style=for-the-badge&amp;logo=gmail&amp;logoColor=white" alt="Email: deepreshion@gmail.com"></a>
+</p>
 
-Требования: Node.js 22+, npm, Docker и Supabase CLI. Для iOS также нужны macOS и Xcode.
-
-```bash
-npm install
-cp .env.example .env
-npm run supabase:start
-```
-
-После запуска Supabase скопируйте локальные `API URL` и `Supabase publishable key` в `.env` как `VITE_SUPABASE_URL` и `VITE_SUPABASE_PUBLISHABLE_KEY`, затем:
-
-```bash
-npm run dev
-```
-
-Письма magic link в локальной среде доступны в Inbucket по адресу `http://127.0.0.1:54324`.
-
-### Быстрый просмотр без Supabase
-
-В режиме `npm run dev` на экране входа появляется кнопка «Посмотреть интерфейс без входа». Она включает локальный деморежим с профилем Сени. Можно создавать питомцев и медицинские события, добавлять вложения, проверять историю и календарь. Данные деморежима хранятся локально в браузере (вложения — в IndexedDB) и удаляются при выходе. В обычной production-сборке кнопка недоступна; системные уведомления в Web не планируются.
-
-## Просмотр интерфейса на GitHub Pages
-
-Отдельная сборка `npm run build:pages` предназначена для команды: деморежим доступен и в собранной версии, а форма входа по почте скрыта. Сервер и переменные окружения для этой сборки не требуются. Каждый участник работает со своими локальными данными в браузере; они не синхронизируются между участниками. Эта версия подходит для проверки интерфейса, но не проверяет серверную авторизацию, совместный доступ и нативные функции iOS.
-
-### Первый запуск
-
-1. Отправьте изменения, включая `.github/workflows/pages.yml`, в ветку `main` репозитория `deepreshion/pet-worth`.
-2. В GitHub откройте **Settings → Pages → Build and deployment → Source** и выберите **GitHub Actions**.
-3. В **Actions → Deploy interface preview to GitHub Pages** запустите **Run workflow** для `main` (или отправьте следующий коммит в `main`).
-4. После успешной публикации откройте `https://deepreshion.github.io/pet-worth/` и нажмите «Посмотреть интерфейс без входа».
-
-После каждого push в `main` workflow проверяет код, собирает приложение и публикует папку `dist-pages`. Ссылка на сайт также появится в окружении `github-pages` и в результате workflow. GitHub Pages должен быть доступен для репозитория в вашем тарифе; опубликованный сайт может быть общедоступен.
-
-В сборке Pages используется hash-маршрутизация (`/pet-worth/#/pets`), поэтому прямые ссылки на экраны и обновление страницы работают без серверных правил перенаправления. Пути к ресурсам учитывают каталог репозитория; workflow получает его из настроек Pages, в том числе для собственного домена.
-
-### Проверка сборки локально
-
-```bash
-npm run build:pages
-npm run preview:pages
-```
-
-Откройте `http://localhost:4173/pet-worth/`. Сборка Pages записывается в `dist-pages`, обычная сборка приложения — в `dist`. Capacitor использует только `dist`, поэтому сборка Pages не заменяет ресурсы приложения. Перед `npm run cap:sync` выполните обычный `npm run build`, чтобы синхронизировать актуальную версию приложения.
-
-## Проверки
-
-```bash
-npm run lint
-npm run typecheck
-npm test
-npm run build
-npm run supabase:reset
-npm run supabase:test
-```
-
-## iOS
-
-Нативный проект находится в `ios/`. После изменения Web-кода выполните:
-
-```bash
-npm run build
-npm run cap:sync
-open ios/App/App.xcodeproj
-```
-
-Для сборки, синхронизации и запуска приложения на выбранном iOS Simulator одной командой:
-
-```bash
-npm run preview:ios
-```
-
-По умолчанию команда предложит выбрать устройство. Его также можно указать сразу:
-
-```bash
-npm run preview:ios -- --target-name "iPhone 16 Pro"
-```
-
-В Xcode выберите Development Team только для запуска на физическом устройстве. URL scheme `petworth` уже настроен для callback `petworth://auth/callback`. Разрешение на локальные уведомления приложение запрашивает только при включении напоминания.
-
-## Подключение staging
-
-1. Создайте отдельный проект Supabase.
-2. Привяжите CLI и примените миграции: `supabase link --project-ref <ref>` и `supabase db push`.
-3. Добавьте в Auth URL Configuration адрес Web-приложения с `/auth/callback` и `petworth://auth/callback`.
-4. Скопируйте из настроек проекта `Project URL` и `Supabase publishable key`, затем задайте их как `VITE_SUPABASE_URL` и `VITE_SUPABASE_PUBLISHABLE_KEY` в переменных окружения клиентской сборки.
-5. При необходимости добавьте `VITE_SENTRY_DSN`. Sentry настроен без отправки PII и содержимого форм.
-
-Supabase publishable key разрешено включать в клиентскую Web- или мобильную сборку. Он не является секретом: безопасность и разграничение доступа к данным должны обеспечиваться корректными политиками Row Level Security (RLS).
-
-Supabase secret key и legacy `service_role` дают повышенные права. Их нельзя помещать в `.env` клиентского приложения, исходный код, CI-переменные клиентской сборки или мобильный bundle.
-
-Никакие демонстрационные медицинские записи не создаются. Staging предназначен только для тестовых, не реальных медицинских данных.
+<p align="center">
+  <a href="docs/README.md">Документация</a>
+</p>
